@@ -1,11 +1,9 @@
 "use client";
-
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import { CheckCircle2, Package, Printer, ShoppingBag } from "lucide-react";
-
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { CheckCircle2, Package, Printer, ShoppingBag } from "lucide-react";
 import {
   Card,
   CardContent,

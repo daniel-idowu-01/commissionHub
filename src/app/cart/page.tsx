@@ -1,17 +1,15 @@
 "use client";
-
-import { useState, useEffect } from "react";
 import Link from "next/link";
+import { toast } from "@/lib/toast";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ShoppingCart } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { CartItem } from "@/components/cart/cart-item";
+import { ArrowLeft, ShoppingCart } from "lucide-react";
 import { CartSummary } from "@/components/cart/cart-summary";
-import { toast } from "@/lib/toast";
 
-// Mock cart data - in a real app, this would come from your state management or API
+// Mock cart data
 const initialCartItems = [
   {
     id: "1",

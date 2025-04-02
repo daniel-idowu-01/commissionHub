@@ -1,5 +1,6 @@
-import type { ReactNode } from "react";
 import Link from "next/link";
+import type { ReactNode } from "react";
+import { Button } from "@/components/ui/button";
 import {
   BarChart3,
   Home,
@@ -9,7 +10,6 @@ import {
   ShoppingBag,
   Users,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,

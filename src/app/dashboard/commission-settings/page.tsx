@@ -71,7 +71,7 @@ export default function CommissionSettingsPage() {
   };
 
   return (
-    <div className="container py-10">
+    <div className="container py-10 px-5 sm:px-10">
       <div className="flex flex-col space-y-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">

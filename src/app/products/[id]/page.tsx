@@ -171,7 +171,7 @@ const products = [
 
 export default function ProductPage() {
   const router = useRouter();
-  const params = useParams()
+  const params = useParams();
   const searchParams = useSearchParams();
   const referrerId = searchParams.get("ref");
 
@@ -296,7 +296,7 @@ export default function ProductPage() {
   const isReferralLink = !!referrerId;
 
   return (
-    <div className="container py-10">
+    <div className="container py-10 px-5 sm:px-10">
       {isReferralLink && (
         <div className="mb-6 p-4 bg-primary/10 rounded-lg border border-primary/20">
           <p className="text-sm text-center">

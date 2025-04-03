@@ -70,6 +70,9 @@ export default function SignupPage() {
     router.push("/auth/login");
   }
 
+  const isFormIncomplete =
+    Object.values(formData).some((value) => !value?.trim()) || loading;
+
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] py-12">
       <Card className="w-full max-w-md">
@@ -82,8 +85,8 @@ export default function SignupPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-2 gap-4">
+          <form className="space-y-4">
+            <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label htmlFor="firstName">First name</Label>
                 <Input
@@ -110,7 +113,7 @@ export default function SignupPage() {
               <Input
                 id="email"
                 type="email"
-                placeholder="m@example.com"
+                placeholder="johndoe@example.com"
                 required
                 value={formData.email}
                 onChange={handleChange}
@@ -136,22 +139,27 @@ export default function SignupPage() {
                 onChange={handleChange}
               />
             </div>
-            <CardFooter className="flex flex-col space-y-4">
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Creating account..." : "Create account"}
-              </Button>
-              <div className="text-center text-sm">
-                Already have an account?{" "}
-                <Link
-                  href="/auth/login"
-                  className="text-primary underline-offset-4 hover:underline"
-                >
-                  Log in
-                </Link>
-              </div>
-            </CardFooter>
           </form>
         </CardContent>
+        <CardFooter className="flex flex-col space-y-4">
+          <Button
+            onClick={handleSubmit}
+            type="submit"
+            className="w-full"
+            disabled={isFormIncomplete}
+          >
+            {loading ? "Creating account..." : "Create account"}
+          </Button>
+          <div className="text-center text-sm">
+            Already have an account?{" "}
+            <Link
+              href="/auth/login"
+              className="text-primary underline-offset-4 hover:underline"
+            >
+              Log in
+            </Link>
+          </div>
+        </CardFooter>
       </Card>
     </div>
   );

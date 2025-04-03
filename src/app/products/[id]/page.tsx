@@ -1,22 +1,18 @@
 "use client";
-
 import type React from "react";
-
-import { useState, useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import {
-  ArrowLeft,
-  Check,
-  Heart,
-  Share2,
-  ShoppingCart,
-  Star,
-} from "lucide-react";
-
+import Image from "next/image";
+import { toast } from "@/lib/toast";
+import { useState, useEffect } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { useRouter, useSearchParams } from "next/navigation";
+import { ShareLinkGenerator } from "@/components/share-link-generator";
+import { RelatedProducts } from "@/components/products/related-products";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Card,
@@ -26,13 +22,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
-import { RelatedProducts } from "@/components/products/related-products";
-import { toast } from "@/lib/toast";
-import { ShareLinkGenerator } from "@/components/share-link-generator";
+import {
+  ArrowLeft,
+  Check,
+  Heart,
+  Share2,
+  ShoppingCart,
+  Star,
+} from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -43,7 +40,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-// Mock product data - in a real app, this would come from your database
+// Mock product data
 const products = [
   {
     id: "1",

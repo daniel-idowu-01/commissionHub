@@ -1,12 +1,11 @@
+import "./globals.css";
+import Link from "next/link";
 import type React from "react";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import Link from "next/link";
-
-import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
 import Navbar from "@/components/navbar";
-import { Toaster } from "@/components/ui/sonner"
+import { Inter } from "next/font/google";
+import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,31 +22,30 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-      
-          <Navbar />
-          {children}
-          <footer className="w-full border-t py-6">
-            <div className="container flex flex-col items-center justify-center gap-4 md:flex-row md:gap-8">
-              <p className="text-center text-sm text-muted-foreground">
-                © 2025 CommissionHub. All rights reserved.
-              </p>
-              <div className="flex gap-4">
-                <Link
-                  href="/terms"
-                  className="text-sm text-muted-foreground hover:underline"
-                >
-                  Terms of Service
-                </Link>
-                <Link
-                  href="/privacy"
-                  className="text-sm text-muted-foreground hover:underline"
-                >
-                  Privacy Policy
-                </Link>
-              </div>
+        <Navbar />
+        {children}
+        <footer className="w-full border-t py-6">
+          <div className="container flex flex-col items-center justify-center gap-4 md:flex-row md:gap-8">
+            <p className="text-center text-sm text-muted-foreground">
+              © 2025 CommissionHub. All rights reserved.
+            </p>
+            <div className="flex gap-4">
+              <Link
+                href="/terms"
+                className="text-sm text-muted-foreground hover:underline"
+              >
+                Terms of Service
+              </Link>
+              <Link
+                href="/privacy"
+                className="text-sm text-muted-foreground hover:underline"
+              >
+                Privacy Policy
+              </Link>
             </div>
-          </footer>
-          <Toaster />
+          </div>
+        </footer>
+        <Toaster />
       </body>
     </html>
   );

@@ -1,12 +1,13 @@
 "use client";
-
 import type React from "react";
-
-import { useState, useRef, useEffect } from "react";
+import { toast } from "@/lib/toast";
 import { Filter, Search } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useState, useRef, useEffect } from "react";
+import { Separator } from "@/components/ui/separator";
+import { ProductGrid } from "@/components/products/product-grid";
+import { ProductFilters } from "@/components/products/product-filters";
 import {
   Select,
   SelectContent,
@@ -14,7 +15,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 import {
   Sheet,
   SheetContent,
@@ -23,9 +23,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { ProductGrid } from "@/components/products/product-grid";
-import { ProductFilters } from "@/components/products/product-filters";
-import { toast } from "@/lib/toast";
 
 export default function ProductsPage() {
   const [searchQuery, setSearchQuery] = useState("");

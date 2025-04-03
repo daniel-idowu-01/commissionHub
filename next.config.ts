@@ -1,7 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    domains: ["ng.jumia.is"],
+  },
+  // env: {
+  //   OCR_API_KEY: process.env.OCR_API_KEY,
+  // },
 };
 
 export default nextConfig;

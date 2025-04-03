@@ -10,8 +10,8 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useRouter, useSearchParams } from "next/navigation";
 import { ShareLinkGenerator } from "@/components/share-link-generator";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 import { RelatedProducts } from "@/components/products/related-products";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -169,13 +169,15 @@ const products = [
   },
 ];
 
-export default function ProductPage({ params }: { params: { id: string } }) {
+export default function ProductPage() {
   const router = useRouter();
+  const params = useParams()
   const searchParams = useSearchParams();
   const referrerId = searchParams.get("ref");
 
   // Find the product by ID
-  const product = products.find((p) => p.id === params.id) || products[0];
+  const productId = params.id;
+  const product = products.find((p) => p.id === productId) || products[0];
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [isInWishlist, setIsInWishlist] = useState(false);

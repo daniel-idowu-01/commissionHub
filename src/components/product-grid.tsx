@@ -48,7 +48,7 @@ const products = [
 
 export default function ProductGrid() {
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 w-full max-w-6xl mx-auto">
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 w-full max-w-6xl mx-auto text-left">
       {products.map((product) => (
         <Card key={product.id} className="overflow-hidden">
           <CardHeader className="p-0">

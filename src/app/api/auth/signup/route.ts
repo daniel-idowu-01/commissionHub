@@ -10,7 +10,7 @@ export async function POST(req: Request) {
 
     if (!firstName || !lastName || !email || !password) {
       return NextResponse.json(
-        { error: "All fields are required" },
+        { message: "All fields are required" },
         { status: 400 }
       );
     }
@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return NextResponse.json(
-        { error: "Email already exists" },
+        { message: "Email already exists" },
         { status: 400 }
       );
     }
@@ -26,7 +26,9 @@ export async function POST(req: Request) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await User.create({
-      name,
+      name: `${firstName} ${lastName}`,
+      firstName,
+      lastName,
       email,
       password: hashedPassword,
     });

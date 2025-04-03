@@ -1,10 +1,9 @@
 "use client";
-
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { toast } from "@/lib/toast";
 import { Heart } from "lucide-react";
-
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,7 +13,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { toast } from "@/lib/toast";
 
 // Mock related products data
 const relatedProducts = [

@@ -1,6 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
-
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-// Mock product data - in a real app, this would come from your database
+// Mock product data
 const products = [
   {
     id: "1",

@@ -1,4 +1,3 @@
-// Create a new utility file for toast functions
 import { toast as sonnerToast } from "sonner";
 
 type ToastProps = {

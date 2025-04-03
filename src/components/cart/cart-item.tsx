@@ -1,13 +1,10 @@
 "use client";
-
 import type React from "react";
-
-import { useState } from "react";
 import Image from "next/image";
-import { Minus, Plus, Trash2 } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Minus, Plus, Trash2 } from "lucide-react";
 
 interface CartItemProps {
   id: string;

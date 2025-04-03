@@ -1,13 +1,11 @@
 "use client";
-
 import { useState } from "react";
+import { toast } from "@/lib/toast";
 import { useRouter } from "next/navigation";
-import { ArrowRight, CreditCard } from "lucide-react";
-
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
-import { toast } from "@/lib/toast";
+import { ArrowRight, CreditCard } from "lucide-react";
 
 interface CartSummaryProps {
   subtotal: number;

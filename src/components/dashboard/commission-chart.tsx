@@ -1,6 +1,4 @@
 "use client";
-
-import { useEffect, useState } from "react";
 import {
   Cell,
   Legend,
@@ -9,6 +7,7 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
+import { useEffect, useState } from "react";
 
 // Mock data for the commission chart
 const mockData = [

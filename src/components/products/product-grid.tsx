@@ -1,10 +1,10 @@
 "use client";
-
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { toast } from "@/lib/toast";
 import { Heart } from "lucide-react";
-
+import { useState, useEffect } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,10 +14,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { toast } from "@/lib/toast";
 
-// Mock product data - in a real app, this would come from your database
+// Mock product data
 const allProducts = [
   {
     id: "1",

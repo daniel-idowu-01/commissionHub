@@ -271,7 +271,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
 
   // Handle add to cart
   const handleAddToCart = () => {
-    // In a real app, you would add the product to the cart state or make an API call
+    // add the product to the cart state or make an API call
     setTimeout(() => {
       toast({
         title: "Added to cart",

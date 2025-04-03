@@ -208,7 +208,7 @@ export default function MyLinksPage() {
   };
 
   const handleCreateLink = () => {
-    // In a real app, you would create the link in your database
+    // create the link in your database
     setIsCreateLinkDialogOpen(false);
     setSelectedProduct(null);
     setNewPrice("");

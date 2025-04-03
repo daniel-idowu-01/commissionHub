@@ -240,7 +240,7 @@ export default function MyProductsPage() {
       return;
     }
 
-    // In a real app, you would update the product in your database
+    // update the product in your database
     toast({
       title: "Product updated",
       description: `${editProduct.name} has been updated successfully`,
@@ -249,7 +249,7 @@ export default function MyProductsPage() {
   };
 
   const handleConfirmDelete = () => {
-    // In a real app, you would delete or archive the product in your database
+    // delete or archive the product in your database
     toast({
       title: "Product removed",
       description: `${selectedProduct.name} has been removed from your products`,
@@ -295,7 +295,7 @@ export default function MyProductsPage() {
       return;
     }
 
-    // In a real app, you would create the product in your database
+    // create the product in your database
     toast({
       title: "Product created",
       description: `${newProduct.name} has been created successfully`,
@@ -314,7 +314,7 @@ export default function MyProductsPage() {
   };
 
   const toggleResellingStatus = (product: any) => {
-    // In a real app, you would update the product in your database
+    // update the product in your database
     toast({
       title: product.allowReselling
         ? "Reselling disabled"

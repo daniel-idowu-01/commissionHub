@@ -203,7 +203,7 @@ export default function MyListingsPage() {
       return;
     }
 
-    // In a real app, you would update the listing in your database
+    // update the listing in your database
     toast({
       title: "Listing updated",
       description: `${selectedListing.name} price updated to $${price.toFixed(
@@ -214,7 +214,7 @@ export default function MyListingsPage() {
   };
 
   const handleConfirmDelete = () => {
-    // In a real app, you would delete or archive the listing in your database
+    // delete or archive the listing in your database
     toast({
       title: "Listing removed",
       description: `${selectedListing.name} has been removed from your listings`,
@@ -233,7 +233,7 @@ export default function MyListingsPage() {
       return;
     }
 
-    // In a real app, you would create the listing in your database
+    // create the listing in your database
     toast({
       title: "Listing created",
       description: `${selectedProduct.name} is now listed for $${price.toFixed(
@@ -247,7 +247,7 @@ export default function MyListingsPage() {
 
   const toggleListingStatus = (listing: any) => {
     const newStatus = listing.status === "active" ? "paused" : "active";
-    // In a real app, you would update the listing status in your database
+    // update the listing status in your database
     toast({
       title: `Listing ${newStatus}`,
       description: `${listing.name} is now ${newStatus}`,

@@ -30,6 +30,7 @@ export function useApi<T = any>() {
           url,
           method,
           data: body,
+          withCredentials: true,
           headers: {
             "Content-Type": "application/json",
             ...(config?.headers || {}),

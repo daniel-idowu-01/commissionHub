@@ -1,4 +1,12 @@
+import { getUser } from "@/lib/auth";
+import { NextResponse } from "next/server";
+
 export async function GET(request: Request) {
+  const user = getUser(request);
+
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   const searchParams = new URL(request.url).searchParams;
   const query = searchParams.get("query");
   // give dummy users data and return it

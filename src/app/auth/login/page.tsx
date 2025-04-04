@@ -76,7 +76,7 @@ export default function LoginPage() {
             <Input
               id="email"
               type="email"
-              placeholder="m@example.com"
+              placeholder="johndoe@example.com"
               required
               value={formData.email}
               onChange={handleChange}

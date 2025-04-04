@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { useApi } from "@/hooks/use-api";
 import { usePathname } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,11 +18,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const { sendRequest } = useApi();
+  const [isOpen, setIsOpen] = useState(false);
 
   // Mock authentication state
-  const isAuthenticated = false;
+  const isAuthenticated = true;
 
   // Mock cart count
   const cartCount = 2;
@@ -107,8 +109,10 @@ export default function Navbar() {
                     <Link href="/settings">Settings</Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <Link href="/api/auth/logout">Log out</Link>
+                  <DropdownMenuItem
+                    onClick={() => sendRequest("/api/auth/logout")}
+                  >
+                    Log out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

@@ -20,11 +20,9 @@ import {
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { user, clearUser } = useUserStore();
   const { sendRequest } = useApi();
   const [isOpen, setIsOpen] = useState(false);
-  const { user } = useUserStore();
-
-  console.log(user);
 
   const isAuthenticated = user ? true : false;
 
@@ -48,6 +46,12 @@ export default function Navbar() {
       active: pathname === "/dashboard",
     },
   ];
+
+  const handleLogout = async () => {
+    await sendRequest("/api/auth/logout", "POST");
+    clearUser();
+    setIsOpen(false);
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background px-5 sm:px-10">
@@ -112,9 +116,7 @@ export default function Navbar() {
                     <Link href="/settings">Settings</Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={() => sendRequest("/api/auth/logout")}
-                  >
+                  <DropdownMenuItem onClick={handleLogout}>
                     Log out
                   </DropdownMenuItem>
                 </DropdownMenuContent>

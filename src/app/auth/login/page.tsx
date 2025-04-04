@@ -35,12 +35,12 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const result = await sendRequest("/api/auth/login", "POST", {
+    const response = await sendRequest("/api/auth/login", "POST", {
       email: formData.email,
       password: formData.password,
     });
 
-    setUser(result.user)
+    setUser(response.user)
   };
 
   // display error and success messages

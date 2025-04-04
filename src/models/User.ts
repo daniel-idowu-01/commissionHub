@@ -27,6 +27,10 @@ const UserSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    bio: {
+      type: String,
+      default: null,
+    },
     role: {
       type: String,
       enum: ["user", "admin"],
@@ -37,7 +41,17 @@ const UserSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: {
+      transform: function (doc, ret) {
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.password;
+        delete ret.__v;
+      },
+    },
+  }
 );
 
 export default mongoose.models.User || mongoose.model("User", UserSchema);

@@ -1,10 +1,13 @@
 "use client";
 import type React from "react";
-import { useState } from "react";
+import { toast } from "@/lib/toast";
+import { useApi } from "@/hooks/use-api";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { useUserStore } from "@/stores/user-store";
 import { Separator } from "@/components/ui/separator";
 import { Bell, CreditCard, Key, User } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -18,19 +21,91 @@ import {
 } from "@/components/ui/card";
 
 export default function SettingsPage() {
+  const { user } = useUserStore();
+  const { sendRequest } = useApi();
+  const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [profileData, setProfileData] = useState({
-    firstName: "John",
-    lastName: "Doe",
-    email: "john.doe@example.com",
-    bio: "Passionate about finding great products and sharing them with others.",
+    firstName: "",
+    lastName: "",
+    email: "",
+    bio: "",
   });
 
-  const handleProfileChange = (
+  // get user profile info from db
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await sendRequest("/api/profile", "GET");
+        if (response) {
+          setProfileData({
+            firstName: response.firstName,
+            lastName: response.lastName,
+            email: response.email,
+            bio: response.bio || "",
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch profile:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserProfile();
+  }, [sendRequest]);
+
+  // update user profile info to db
+  const submitProfileChange = async () => {
+    setIsSaving(true);
+    try {
+      const response = await sendRequest("/api/profile", "PUT", {
+        firstName: profileData.firstName,
+        lastName: profileData.lastName,
+        bio: profileData.bio,
+      });
+
+      if (response) {
+        if (user?.id) {
+          useUserStore.getState().setUser({
+            ...user,
+            id: user.id,
+            name: `${profileData.firstName} ${profileData.lastName}`,
+          });
+        }
+        toast({
+          title: "Success",
+          description: "Profile updated successfully",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update profile",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Handle form input changes
+  const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value } = e.target;
-    setProfileData((prev) => ({ ...prev, [name]: value }));
+    setProfileData({ ...profileData, [e.target.id]: e.target.value });
   };
+
+  if (isLoading)
+    return (
+      <div className="container py-10 px-5 sm:px-10 h-screen">
+        <div className="flex flex-col space-y-6">
+          <h1 className="text-3xl font-bold tracking-tight"></h1>
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+          </div>
+        </div>
+      </div>
+    );
 
   return (
     <div className="container py-10 px-5 sm:px-10">
@@ -79,8 +154,8 @@ export default function SettingsPage() {
                     <Input
                       id="firstName"
                       name="firstName"
-                      value={profileData.firstName}
-                      onChange={handleProfileChange}
+                      value={profileData.firstName || ""}
+                      onChange={handleChange}
                     />
                   </div>
                   <div className="space-y-2">
@@ -88,8 +163,8 @@ export default function SettingsPage() {
                     <Input
                       id="lastName"
                       name="lastName"
-                      value={profileData.lastName}
-                      onChange={handleProfileChange}
+                      value={profileData.lastName || ""}
+                      onChange={handleChange}
                     />
                   </div>
                 </div>
@@ -99,8 +174,8 @@ export default function SettingsPage() {
                     id="email"
                     name="email"
                     type="email"
+                    disabled={true}
                     value={profileData.email}
-                    onChange={handleProfileChange}
                   />
                 </div>
                 <div className="space-y-2">
@@ -110,12 +185,14 @@ export default function SettingsPage() {
                     name="bio"
                     className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     value={profileData.bio}
-                    onChange={handleProfileChange}
+                    onChange={handleChange}
                   />
                 </div>
               </CardContent>
               <CardFooter>
-                <Button>Save changes</Button>
+                <Button onClick={submitProfileChange} disabled={isSaving}>
+                  {isSaving ? "Saving..." : "Save changes"}
+                </Button>
               </CardFooter>
             </Card>
           </TabsContent>

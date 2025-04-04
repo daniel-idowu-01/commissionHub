@@ -1,5 +1,4 @@
 "use client";
-
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "@/lib/toast";
@@ -62,12 +61,14 @@ export default function SignupPage() {
   }
 
   if (data) {
-    toast({
-      title: "Success",
-      description: "Account created successfully!",
-    });
+    setTimeout(() => {
+      toast({
+        title: "Success",
+        description: "Account created successfully!",
+      });
 
-    router.push("/auth/login");
+      router.push("/auth/login");
+    }, 2000);
   }
 
   const isFormIncomplete =

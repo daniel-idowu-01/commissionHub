@@ -23,8 +23,8 @@ export const config = {
   runtime: "nodejs",
   matcher: [
     "/dashboard/:path*",
-    "/cart/:path*",
     "/checkout/:path*",
+    "/settings/:path*",
     "/api/protected/:path*",
   ],
 };

@@ -6,6 +6,7 @@ import { useApi } from "@/hooks/use-api";
 import { usePathname } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useUserStore } from "@/stores/user-store";
 import { Bell, Menu, Package, ShoppingCart, User } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
@@ -21,9 +22,11 @@ export default function Navbar() {
   const pathname = usePathname();
   const { sendRequest } = useApi();
   const [isOpen, setIsOpen] = useState(false);
+  const { user } = useUserStore();
 
-  // Mock authentication state
-  const isAuthenticated = true;
+  console.log(user);
+
+  const isAuthenticated = user ? true : false;
 
   // Mock cart count
   const cartCount = 2;

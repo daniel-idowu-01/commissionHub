@@ -88,7 +88,7 @@ export async function PUT(request: Request) {
 
       const user = await User.findByIdAndUpdate(
         decoded.id,
-        { firstName, lastName, bio },
+        { name: `${firstName} ${lastName}`, firstName, lastName, bio },
         { new: true }
       );
 

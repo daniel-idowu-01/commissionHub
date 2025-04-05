@@ -48,7 +48,7 @@ export default function Navbar() {
   ];
 
   const handleLogout = async () => {
-    await sendRequest("/api/auth/logout", "POST");
+    await sendRequest("/api/auth/logout", "GET");
     clearUser();
     setIsOpen(false);
   };

@@ -20,7 +20,7 @@ import {
 export default function LoginPage() {
   const router = useRouter();
   const { setUser } = useUserStore();
-  const { data, loading, error, sendRequest } = useApi();
+  const { loading, sendRequest } = useApi();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -35,32 +35,31 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const response = await sendRequest("/api/auth/login", "POST", {
-      email: formData.email,
-      password: formData.password,
-    });
-
-    setUser(response.user)
-  };
-
-  // display error and success messages
-  if (error) {
-    toast({
-      title: "Error",
-      description: error,
-    });
-  }
-
-  if (data) {
-    setTimeout(() => {
-      toast({
-        title: "Success",
-        description: "Login successfully!",
+    try {
+      const response = await sendRequest("/api/auth/login", "POST", {
+        email: formData.email,
+        password: formData.password,
       });
 
-      router.push("/");
-    }, 2000);
-  }
+      setUser(response.user);
+
+      setTimeout(() => {
+        toast({
+          title: "Success",
+          description: "Login successfully!",
+        });
+
+        router.push("/");
+      }, 2000);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+      });
+      return;
+    }
+  };
+
 
   const isFormIncomplete =
     Object.values(formData).some((value) => !value?.trim()) || loading;

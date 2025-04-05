@@ -2,6 +2,7 @@
 import type React from "react";
 import { toast } from "@/lib/toast";
 import { useApi } from "@/hooks/use-api";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,8 +22,9 @@ import {
 } from "@/components/ui/card";
 
 export default function SettingsPage() {
-  const { user } = useUserStore();
+  const router = useRouter();
   const { sendRequest } = useApi();
+  const { user, clearUser } = useUserStore();
   const [isLoading, setIsLoading] = useState(true);
   const [isPasswordSaving, setIsPasswordSaving] = useState(false);
   const [isProfileSaving, setIsProfileSaving] = useState(false);
@@ -38,7 +40,9 @@ export default function SettingsPage() {
     bio: "",
   });
 
+  ////////////////////////////////
   // get user profile info from db
+  ////////////////////////////////
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
@@ -61,7 +65,9 @@ export default function SettingsPage() {
     fetchUserProfile();
   }, [sendRequest]);
 
+  ////////////////////////////////
   // update user profile info to db
+  ////////////////////////////////
   const submitProfileChange = async () => {
     setIsProfileSaving(true);
     try {
@@ -94,7 +100,9 @@ export default function SettingsPage() {
     }
   };
 
+  ////////////////////////////////
   // update user profile info to db
+  ////////////////////////////////
   const submitPasswordInfoChange = async () => {
     setIsPasswordSaving(true);
     try {
@@ -158,18 +166,45 @@ export default function SettingsPage() {
     }
   };
 
+  ////////////////////////////////
   // Handle profile form input changes
+  ////////////////////////////////
   const handleProfileChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setProfileData({ ...profileData, [e.target.id]: e.target.value });
   };
 
+  ////////////////////////////////
   // Handle password form input changes
+  ////////////////////////////////
   const handlePasswordChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setPasswordInfo({ ...passwordInfo, [e.target.id]: e.target.value });
+  };
+
+  ////////////////////////////////
+  // handle delete account
+  ////////////////////////////////
+  const handleDeleteAccount = async () => {
+    try {
+      const response = await sendRequest("/api/profile/delete-user", "DELETE");
+      if (response) {
+        toast({
+          title: "Success",
+          description: "Account deleted successfully",
+        });
+
+        clearUser();
+        router.push("/");
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete account",
+      });
+    }
   };
 
   if (isLoading)
@@ -340,7 +375,9 @@ export default function SettingsPage() {
                 </p>
               </CardContent>
               <CardFooter>
-                <Button variant="destructive">Delete account</Button>
+                <Button variant="destructive" onClick={handleDeleteAccount}>
+                  Delete account
+                </Button>
               </CardFooter>
             </Card>
           </TabsContent>

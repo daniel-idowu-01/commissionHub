@@ -3,6 +3,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useApi } from "@/hooks/use-api";
+import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,9 +20,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export default function Navbar() {
+  const router = useRouter();
   const pathname = usePathname();
-  const { user, clearUser } = useUserStore();
   const { sendRequest } = useApi();
+  const { user, clearUser } = useUserStore();
   const [isOpen, setIsOpen] = useState(false);
 
   const isAuthenticated = user ? true : false;
@@ -51,6 +53,8 @@ export default function Navbar() {
     await sendRequest("/api/auth/logout", "GET");
     clearUser();
     setIsOpen(false);
+
+    router.push("/");
   };
 
   return (
@@ -109,14 +113,17 @@ export default function Navbar() {
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
+                  <DropdownMenuItem asChild className="hover:cursor-pointer">
                     <Link href="/dashboard">Dashboard</Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
+                  <DropdownMenuItem asChild className="hover:cursor-pointer">
                     <Link href="/settings">Settings</Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout}>
+                  <DropdownMenuItem
+                    onClick={handleLogout}
+                    className="hover:cursor-pointer"
+                  >
                     Log out
                   </DropdownMenuItem>
                 </DropdownMenuContent>

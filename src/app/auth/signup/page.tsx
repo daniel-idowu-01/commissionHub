@@ -36,40 +36,38 @@ export default function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (formData.password !== formData.confirmPassword) {
+    try {
+      if (formData.password !== formData.confirmPassword) {
+        toast({
+          title: "Error",
+          description: "Passwords do not match!",
+        });
+        return;
+      }
+
+      await sendRequest("/api/auth/signup", "POST", {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      setTimeout(() => {
+        toast({
+          title: "Success",
+          description: "Account created successfully!",
+        });
+
+        router.push("/auth/login");
+      }, 2000);
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: "Passwords do not match!",
+        description: error.message,
       });
       return;
     }
-
-    await sendRequest("/api/auth/signup", "POST", {
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      email: formData.email,
-      password: formData.password,
-    });
   };
-
-  // display error and success messages
-  if (error) {
-    toast({
-      title: "Error",
-      description: error,
-    });
-  }
-
-  if (data) {
-    setTimeout(() => {
-      toast({
-        title: "Success",
-        description: "Account created successfully!",
-      });
-
-      router.push("/auth/login");
-    }, 2000);
-  }
 
   const isFormIncomplete =
     Object.values(formData).some((value) => !value?.trim()) || loading;

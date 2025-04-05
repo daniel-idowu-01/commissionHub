@@ -1,9 +1,12 @@
+"use client"
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useUserStore } from "@/stores/user-store";
 import ProductGrid from "@/components/product-grid";
 
 export default function Home() {
+  const { user } = useUserStore();
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-1">
@@ -25,11 +28,13 @@ export default function Home() {
                     Browse Products <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
-                <Link href="/auth/signup">
-                  <Button variant="outline" className="px-8">
-                    Sign Up
-                  </Button>
-                </Link>
+                {!user && (
+                  <Link href="/auth/signup">
+                    <Button variant="outline" className="px-8">
+                      Sign Up
+                    </Button>
+                  </Link>
+                )}
               </div>
             </div>
           </div>

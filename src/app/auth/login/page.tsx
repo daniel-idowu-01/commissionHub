@@ -46,7 +46,7 @@ export default function LoginPage() {
       setTimeout(() => {
         toast({
           title: "Success",
-          description: "Login successfully!",
+          description: "Login successful!",
         });
 
         router.push("/");

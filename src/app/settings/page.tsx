@@ -23,8 +23,14 @@ import {
 export default function SettingsPage() {
   const { user } = useUserStore();
   const { sendRequest } = useApi();
-  const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isPasswordSaving, setIsPasswordSaving] = useState(false);
+  const [isProfileSaving, setIsProfileSaving] = useState(false);
+  const [passwordInfo, setPasswordInfo] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
   const [profileData, setProfileData] = useState({
     firstName: "",
     lastName: "",
@@ -57,7 +63,7 @@ export default function SettingsPage() {
 
   // update user profile info to db
   const submitProfileChange = async () => {
-    setIsSaving(true);
+    setIsProfileSaving(true);
     try {
       const response = await sendRequest("/api/profile", "PUT", {
         firstName: profileData.firstName,
@@ -84,15 +90,59 @@ export default function SettingsPage() {
         description: "Failed to update profile",
       });
     } finally {
-      setIsSaving(false);
+      setIsProfileSaving(false);
     }
   };
 
-  // Handle form input changes
-  const handleChange = (
+  // update user profile info to db
+  const submitPasswordInfoChange = async () => {
+    setIsPasswordSaving(true);
+    try {
+      const response = await sendRequest(
+        "/api/profile/change-password",
+        "PUT",
+        {
+          currentPassword: passwordInfo.currentPassword,
+          newPassword: passwordInfo.newPassword,
+          confirmPassword: passwordInfo.confirmPassword,
+        }
+      );
+
+      if (response) {
+        toast({
+          title: "Success",
+          description: "Profile updated successfully",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to update password",
+        });
+      }
+    } catch (error) {
+      console.log(3333333333);
+      console.log(error);
+      toast({
+        title: "Error",
+        description: "Failed to update password",
+      });
+    } finally {
+      setIsPasswordSaving(false);
+    }
+  };
+
+  // Handle profile form input changes
+  const handleProfileChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setProfileData({ ...profileData, [e.target.id]: e.target.value });
+  };
+
+  // Handle password form input changes
+  const handlePasswordChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setPasswordInfo({ ...passwordInfo, [e.target.id]: e.target.value });
   };
 
   if (isLoading)
@@ -155,7 +205,7 @@ export default function SettingsPage() {
                       id="firstName"
                       name="firstName"
                       value={profileData.firstName || ""}
-                      onChange={handleChange}
+                      onChange={handleProfileChange}
                     />
                   </div>
                   <div className="space-y-2">
@@ -164,7 +214,7 @@ export default function SettingsPage() {
                       id="lastName"
                       name="lastName"
                       value={profileData.lastName || ""}
-                      onChange={handleChange}
+                      onChange={handleProfileChange}
                     />
                   </div>
                 </div>
@@ -185,13 +235,16 @@ export default function SettingsPage() {
                     name="bio"
                     className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     value={profileData.bio}
-                    onChange={handleChange}
+                    onChange={handleProfileChange}
                   />
                 </div>
               </CardContent>
               <CardFooter>
-                <Button onClick={submitProfileChange} disabled={isSaving}>
-                  {isSaving ? "Saving..." : "Save changes"}
+                <Button
+                  onClick={submitProfileChange}
+                  disabled={isProfileSaving}
+                >
+                  {isProfileSaving ? "Saving..." : "Save changes"}
                 </Button>
               </CardFooter>
             </Card>
@@ -207,20 +260,40 @@ export default function SettingsPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="current-password">Current password</Label>
-                  <Input id="current-password" type="password" />
+                  <Label htmlFor="currentPassword">Current password</Label>
+                  <Input
+                    id="currentPassword"
+                    type="password"
+                    onChange={handlePasswordChange}
+                  />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="new-password">New password</Label>
-                  <Input id="new-password" type="password" />
+                  <Label htmlFor="newPassword">New password</Label>
+                  <Input
+                    id="newPassword"
+                    type="password"
+                    onChange={handlePasswordChange}
+                  />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="confirm-password">Confirm password</Label>
-                  <Input id="confirm-password" type="password" />
+                  <Label htmlFor="confirmPassword">Confirm password</Label>
+                  <Input
+                    id="confirmPassword"
+                    type="password"
+                    onChange={handlePasswordChange}
+                  />
                 </div>
               </CardContent>
               <CardFooter>
-                <Button>Change password</Button>
+                <Button
+                  disabled={isPasswordSaving}
+                  onClick={submitPasswordInfoChange}
+                >
+                  {" "}
+                  {isPasswordSaving
+                    ? "Chainging Password..."
+                    : "Change Password"}
+                </Button>
               </CardFooter>
             </Card>
             <Card>

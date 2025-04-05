@@ -1,6 +1,8 @@
+"use client";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
+import { useUserStore } from "@/stores/user-store";
 import {
   BarChart3,
   Home,
@@ -27,6 +29,8 @@ interface DashboardLayoutProps {
 }
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
+  const { user } = useUserStore();
+  console.log(user);
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full bg-gray-50">
@@ -55,7 +59,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild className="group">
                     <Link href="/dashboard">
-                      <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-md bg-gray-100 text-gray-700 group-hover:bg-purple-100 group-hover:text-purple-600 group-data-[active=true]:bg-purple-100 group-data-[active=true]:text-purple-600">
+                      <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-md bg-gray-100 text-gray-700">
                         <Home className="h-4 w-4" />
                       </div>
                       <span>Dashboard</span>
@@ -73,7 +77,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild className="group">
                     <Link href="/dashboard/my-products">
-                      <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-md bg-gray-100 text-gray-700 group-hover:bg-purple-100 group-hover:text-purple-600 group-data-[active=true]:bg-purple-100 group-data-[active=true]:text-purple-600">
+                      <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-md bg-gray-100 text-gray-700">
                         <Package className="h-4 w-4" />
                       </div>
                       <span>My Products</span>
@@ -83,7 +87,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild className="group">
                     <Link href="/dashboard/my-listings">
-                      <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-md bg-gray-100 text-gray-700 group-hover:bg-purple-100 group-hover:text-purple-600 group-data-[active=true]:bg-purple-100 group-data-[active=true]:text-purple-600">
+                      <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-md bg-gray-100 text-gray-700">
                         <ShoppingBag className="h-4 w-4" />
                       </div>
                       <span>My Listings</span>
@@ -101,7 +105,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild className="group">
                     <Link href="/dashboard/my-links">
-                      <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-md bg-gray-100 text-gray-700 group-hover:bg-purple-100 group-hover:text-purple-600 group-data-[active=true]:bg-purple-100 group-data-[active=true]:text-purple-600">
+                      <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-md bg-gray-100 text-gray-700">
                         <Link2 className="h-4 w-4" />
                       </div>
                       <span>My Referral Links</span>
@@ -111,7 +115,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild className="group">
                     <Link href="/dashboard/reseller-analytics">
-                      <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-md bg-gray-100 text-gray-700 group-hover:bg-purple-100 group-hover:text-purple-600 group-data-[active=true]:bg-purple-100 group-data-[active=true]:text-purple-600">
+                      <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-md bg-gray-100 text-gray-700">
                         <BarChart3 className="h-4 w-4" />
                       </div>
                       <span>Analytics</span>
@@ -129,7 +133,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild className="group">
                     <Link href="/dashboard/commission-settings">
-                      <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-md bg-gray-100 text-gray-700 group-hover:bg-purple-100 group-hover:text-purple-600 group-data-[active=true]:bg-purple-100 group-data-[active=true]:text-purple-600">
+                      <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-md bg-gray-100 text-gray-700">
                         <Settings className="h-4 w-4" />
                       </div>
                       <span>Commission Settings</span>
@@ -141,16 +145,16 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </SidebarContent>
           <SidebarFooter className="mt-auto border-t border-gray-200 p-4">
             <div className="mb-4 flex items-center gap-3 px-2">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-gray-200 to-gray-300">
+              <div className="h-10 w-10 rounded-full border bg-gradient-to-br from-gray-200 to-gray-300">
                 <img
-                  src="/placeholder.svg?height=40&width=40"
+                  src="https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"
                   alt="User avatar"
                   className="h-10 w-10 rounded-full object-cover"
                 />
               </div>
               <div>
-                <p className="font-medium text-gray-900">John Doe</p>
-                <p className="text-xs text-gray-500">john.doe@example.com</p>
+                <p className="font-medium text-gray-900">{user?.name}</p>
+                <p className="text-xs text-gray-500">{user?.email}</p>
               </div>
             </div>
             <Button

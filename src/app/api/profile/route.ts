@@ -85,14 +85,12 @@ export async function PUT(request: Request) {
         id: string;
       };
       const { firstName, lastName, bio } = await request.json();
-      console.log(333, bio);
 
       const user = await User.findByIdAndUpdate(
         decoded.id,
         { firstName, lastName, bio },
         { new: true }
       );
-      console.log(222, user);
 
       if (!user) {
         return NextResponse.json({ error: "User not found" }, { status: 404 });

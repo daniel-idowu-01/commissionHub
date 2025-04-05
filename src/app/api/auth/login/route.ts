@@ -39,10 +39,7 @@ export async function POST(req: Request) {
       );
     }
 
-    (
-      await
-      cookies()
-    ).set("token", token, {
+    (await cookies()).set("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       path: "/",
@@ -51,7 +48,7 @@ export async function POST(req: Request) {
     return NextResponse.json(
       {
         message: "Login successful",
-        user: { id: user._id, email: user.email },
+        user: { id: user._id, email: user.email, name: user.name },
       },
       { status: 200 }
     );

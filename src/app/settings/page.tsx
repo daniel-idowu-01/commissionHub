@@ -98,6 +98,34 @@ export default function SettingsPage() {
   const submitPasswordInfoChange = async () => {
     setIsPasswordSaving(true);
     try {
+      if (
+        !passwordInfo.currentPassword ||
+        !passwordInfo.newPassword ||
+        !passwordInfo.confirmPassword
+      ) {
+        toast({
+          title: "Error",
+          description: "Please fill in all fields",
+        });
+        return;
+      }
+
+      if (passwordInfo.currentPassword === passwordInfo.newPassword) {
+        toast({
+          title: "Error",
+          description: "New password cannot be the same as current password",
+        });
+        return;
+      }
+
+      if (passwordInfo.newPassword !== passwordInfo.confirmPassword) {
+        toast({
+          title: "Error",
+          description: "New password and confirm password do not match",
+        });
+        return;
+      }
+
       const response = await sendRequest(
         "/api/profile/change-password",
         "PUT",
@@ -113,18 +141,17 @@ export default function SettingsPage() {
           title: "Success",
           description: "Profile updated successfully",
         });
-      } else {
-        toast({
-          title: "Error",
-          description: "Failed to update password",
-        });
       }
-    } catch (error) {
-      console.log(3333333333);
-      console.log(error);
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        "Failed to update password";
+
       toast({
         title: "Error",
-        description: "Failed to update password",
+        description: errorMessage,
+        variant: "destructive",
       });
     } finally {
       setIsPasswordSaving(false);
@@ -265,6 +292,7 @@ export default function SettingsPage() {
                     id="currentPassword"
                     type="password"
                     onChange={handlePasswordChange}
+                    required
                   />
                 </div>
                 <div className="space-y-2">
@@ -273,6 +301,7 @@ export default function SettingsPage() {
                     id="newPassword"
                     type="password"
                     onChange={handlePasswordChange}
+                    required
                   />
                 </div>
                 <div className="space-y-2">
@@ -281,6 +310,7 @@ export default function SettingsPage() {
                     id="confirmPassword"
                     type="password"
                     onChange={handlePasswordChange}
+                    required
                   />
                 </div>
               </CardContent>

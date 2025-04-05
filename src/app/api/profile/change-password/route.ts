@@ -5,6 +5,7 @@ import { getUser } from "@/lib/auth";
 import { cookies } from "next/headers";
 import { connectDB } from "@/lib/mongodb";
 import { NextResponse } from "next/server";
+import { passwordRegex } from "@/lib/constants";
 
 export async function PUT(request: Request) {
   try {
@@ -35,7 +36,10 @@ export async function PUT(request: Request) {
       const user = await User.findById(decoded.id);
 
       if (!user) {
-        return NextResponse.json({ message: "User not found" }, { status: 404 });
+        return NextResponse.json(
+          { message: "User not found" },
+          { status: 404 }
+        );
       }
 
       const isMatch = await bcrypt.compare(currentPassword, user.password);
@@ -46,10 +50,11 @@ export async function PUT(request: Request) {
         );
       }
 
-      if (newPassword !== confirmPassword) {
+      if (!passwordRegex.test(newPassword)) {
         return NextResponse.json(
           {
-            message: "Confirm password does not match with your new password",
+            message:
+              "Password must have at least one uppercase, one lowercase, one number, one symbol, and be more than 8 characters!",
           },
           { status: 400 }
         );

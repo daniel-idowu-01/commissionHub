@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 
 interface ApiResponse<T> {
   data: T | null;
@@ -10,7 +10,7 @@ interface ApiResponse<T> {
 }
 
 export function useApi<T = any>() {
-  const [response, setResponse] = useState<ApiResponse<T>>({
+  const [apiState, setApiState] = useState<ApiResponse<T>>({
     data: null,
     error: null,
     loading: false,
@@ -22,8 +22,8 @@ export function useApi<T = any>() {
       method: "GET" | "POST" | "PUT" | "DELETE" = "GET",
       body?: any,
       config?: AxiosRequestConfig
-    ) => {
-      setResponse({ data: null, error: null, loading: true });
+    ): Promise<T> => {
+      setApiState({ data: null, error: null, loading: true });
 
       try {
         const res: AxiosResponse<T> = await axios({
@@ -38,18 +38,32 @@ export function useApi<T = any>() {
           ...config,
         });
 
-        setResponse({ data: res.data, error: null, loading: false });
+        setApiState({ data: res.data, error: null, loading: false });
         return res.data;
       } catch (error: any) {
-        setResponse({
+        const axiosError = error as AxiosError<{
+          message?: string;
+          error?: string;
+        }>;
+        const errorMessage =
+          axiosError.response?.data?.message ||
+          axiosError.response?.data?.error ||
+          axiosError.message;
+
+        setApiState({
           data: null,
-          error: error.response?.data?.message || error.message,
+          error: errorMessage,
           loading: false,
         });
+
+        throw {
+          response: axiosError.response,
+          message: errorMessage,
+        };
       }
     },
     []
   );
 
-  return { ...response, sendRequest };
+  return { ...apiState, sendRequest };
 }

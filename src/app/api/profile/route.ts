@@ -119,7 +119,7 @@ export async function PUT(request: Request) {
 
       if (error instanceof jwt.TokenExpiredError) {
         return NextResponse.json(
-          { error: "Unauthorized - Token expired" },
+          { error: "Token expired. Please login again." },
           { status: 401 }
         );
       }

@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { toast } from "@/lib/toast";
+import { useApi } from "@/hooks/use-api";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -130,33 +131,31 @@ const myProducts = [
 const categories = [
   { id: "electronics", name: "Electronics" },
   { id: "home-kitchen", name: "Home & Kitchen" },
-  { id: "sports-outdoors", name: "Sports & Outdoors" },
-  { id: "beauty-personal-care", name: "Beauty & Personal Care" },
-  { id: "toys-games", name: "Toys & Games" },
-  { id: "clothing", name: "Clothing" },
+  { id: "sports-outdoors", name: "Sports" },
+  { id: "beauty-personal-care", name: "Beauty" },
+  { id: "toys-games", name: "Toys" },
+  { id: "clothing", name: "Fashion" },
   { id: "books", name: "Books" },
   { id: "home-office", name: "Home & Office" },
 ];
 
 export default function MyProductsPage() {
   const [activeTab, setActiveTab] = useState("active");
+  const { data, loading, error, sendRequest } = useApi();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  // New product form state
   const [newProduct, setNewProduct] = useState({
     name: "",
     description: "",
     basePrice: "",
     recommendedPrice: "",
-    inventory: "",
+    inventory: 1,
     category: "",
     allowReselling: true,
   });
-
-  // Edit product form state
   const [editProduct, setEditProduct] = useState({
     name: "",
     description: "",
@@ -257,8 +256,7 @@ export default function MyProductsPage() {
     setIsDeleteDialogOpen(false);
   };
 
-  const handleCreateProduct = () => {
-    // Validate form
+  const handleCreateProduct = async () => {
     if (
       !newProduct.name ||
       !newProduct.description ||
@@ -295,11 +293,30 @@ export default function MyProductsPage() {
       return;
     }
 
+    if (newProduct.inventory <= 0) {
+      toast({
+        title: "Invalid inventory",
+        description: "Inventory must be a positive number",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      await sendRequest("/api/users/products", "POST", newProduct);
+      toast({
+        title: "Product created",
+        description: `${newProduct.name} has been created successfully`,
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to create product",
+        variant: "destructive",
+      });
+      return;
+    }
     // create the product in your database
-    toast({
-      title: "Product created",
-      description: `${newProduct.name} has been created successfully`,
-    });
     setIsAddDialogOpen(false);
     // Reset form
     setNewProduct({
@@ -307,7 +324,7 @@ export default function MyProductsPage() {
       description: "",
       basePrice: "",
       recommendedPrice: "",
-      inventory: "",
+      inventory: 1,
       category: "",
       allowReselling: true,
     });
@@ -1098,7 +1115,10 @@ export default function MyProductsPage() {
                   step="1"
                   value={newProduct.inventory}
                   onChange={(e) =>
-                    setNewProduct({ ...newProduct, inventory: e.target.value })
+                    setNewProduct({
+                      ...newProduct,
+                      inventory: parseInt(e.target.value) || 0,
+                    })
                   }
                 />
               </div>

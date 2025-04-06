@@ -1,9 +1,9 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
 import { toast } from "@/lib/toast";
 import { useApi } from "@/hooks/use-api";
+import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -53,80 +53,80 @@ import {
 } from "@/components/ui/select";
 
 // Mock data for my products
-const myProducts = [
-  {
-    id: "301",
-    name: "Premium Bluetooth Speaker",
-    description:
-      "High-quality portable bluetooth speaker with 24-hour battery life and waterproof design.",
-    basePrice: 89.99,
-    recommendedPrice: 109.99,
-    inventory: 45,
-    sales: 78,
-    revenue: 7019.22,
-    commissions: 1560.0,
-    image: "/placeholder.svg?height=80&width=80",
-    status: "active",
-    category: "Electronics",
-    created: "2023-08-15",
-    allowReselling: true,
-    resellerCount: 12,
-  },
-  {
-    id: "302",
-    name: "Ergonomic Office Chair",
-    description:
-      "Adjustable office chair with lumbar support and breathable mesh back for all-day comfort.",
-    basePrice: 199.99,
-    recommendedPrice: 249.99,
-    inventory: 18,
-    sales: 32,
-    revenue: 6399.68,
-    commissions: 1600.0,
-    image: "/placeholder.svg?height=80&width=80",
-    status: "active",
-    category: "Home & Office",
-    created: "2023-09-05",
-    allowReselling: true,
-    resellerCount: 8,
-  },
-  {
-    id: "303",
-    name: "Stainless Steel Water Bottle",
-    description:
-      "Double-walled insulated water bottle that keeps drinks cold for 24 hours or hot for 12 hours.",
-    basePrice: 24.99,
-    recommendedPrice: 34.99,
-    inventory: 120,
-    sales: 95,
-    revenue: 2374.05,
-    commissions: 950.0,
-    image: "/placeholder.svg?height=80&width=80",
-    status: "active",
-    category: "Sports & Outdoors",
-    created: "2023-07-22",
-    allowReselling: true,
-    resellerCount: 15,
-  },
-  {
-    id: "304",
-    name: "Wireless Charging Pad",
-    description:
-      "Fast wireless charging pad compatible with all Qi-enabled devices.",
-    basePrice: 29.99,
-    recommendedPrice: 39.99,
-    inventory: 0,
-    sales: 64,
-    revenue: 1919.36,
-    commissions: 640.0,
-    image: "/placeholder.svg?height=80&width=80",
-    status: "out_of_stock",
-    category: "Electronics",
-    created: "2023-10-10",
-    allowReselling: false,
-    resellerCount: 0,
-  },
-];
+// const myProducts = [
+//   {
+//     id: "301",
+//     name: "Premium Bluetooth Speaker",
+//     description:
+//       "High-quality portable bluetooth speaker with 24-hour battery life and waterproof design.",
+//     basePrice: 89.99,
+//     recommendedPrice: 109.99,
+//     inventory: 45,
+//     sales: 78,
+//     revenue: 7019.22,
+//     commissions: 1560.0,
+//     image: "https://www.versaspa-europe.com/media/codazon/subcategories/placeholder/placeholder.jpg?height=80&width=80",
+//     status: "active",
+//     category: "Electronics",
+//     created: "2023-08-15",
+//     allowReselling: true,
+//     resellerCount: 12,
+//   },
+//   {
+//     id: "302",
+//     name: "Ergonomic Office Chair",
+//     description:
+//       "Adjustable office chair with lumbar support and breathable mesh back for all-day comfort.",
+//     basePrice: 199.99,
+//     recommendedPrice: 249.99,
+//     inventory: 18,
+//     sales: 32,
+//     revenue: 6399.68,
+//     commissions: 1600.0,
+//     image: "https://www.versaspa-europe.com/media/codazon/subcategories/placeholder/placeholder.jpg?height=80&width=80",
+//     status: "active",
+//     category: "Home & Office",
+//     created: "2023-09-05",
+//     allowReselling: true,
+//     resellerCount: 8,
+//   },
+//   {
+//     id: "303",
+//     name: "Stainless Steel Water Bottle",
+//     description:
+//       "Double-walled insulated water bottle that keeps drinks cold for 24 hours or hot for 12 hours.",
+//     basePrice: 24.99,
+//     recommendedPrice: 34.99,
+//     inventory: 120,
+//     sales: 95,
+//     revenue: 2374.05,
+//     commissions: 950.0,
+//     image: "https://www.versaspa-europe.com/media/codazon/subcategories/placeholder/placeholder.jpg?height=80&width=80",
+//     status: "active",
+//     category: "Sports & Outdoors",
+//     created: "2023-07-22",
+//     allowReselling: true,
+//     resellerCount: 15,
+//   },
+//   {
+//     id: "304",
+//     name: "Wireless Charging Pad",
+//     description:
+//       "Fast wireless charging pad compatible with all Qi-enabled devices.",
+//     basePrice: 29.99,
+//     recommendedPrice: 39.99,
+//     inventory: 0,
+//     sales: 64,
+//     revenue: 1919.36,
+//     commissions: 640.0,
+//     image: "https://www.versaspa-europe.com/media/codazon/subcategories/placeholder/placeholder.jpg?height=80&width=80",
+//     status: "out_of_stock",
+//     category: "Electronics",
+//     created: "2023-10-10",
+//     allowReselling: false,
+//     resellerCount: 0,
+//   },
+// ];
 
 // Categories for product creation
 const categories = [
@@ -141,6 +141,7 @@ const categories = [
 ];
 
 export default function MyProductsPage() {
+  const [myProducts, setMyProducts] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState("active");
   const { data, loading, error, sendRequest } = useApi();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -169,10 +170,24 @@ export default function MyProductsPage() {
     images: [] as string[],
   });
 
+  useEffect(() => {
+    const getProducts = async () => {
+      try {
+        const products = await sendRequest("/api/users/products", "GET");
+        setMyProducts(products || []);
+        console.log("Products: ", products);
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+        setMyProducts([]);
+      }
+    };
+    getProducts();
+  }, []);
+
   // Filter products based on active tab
   const filteredProducts = myProducts
     .filter((product) => {
-      if (activeTab === "active") return product.status === "active";
+      if (activeTab === "active") return product.status === "in_stock";
       if (activeTab === "out_of_stock")
         return product.status === "out_of_stock";
       return true; // "all" tab
@@ -186,6 +201,9 @@ export default function MyProductsPage() {
       );
     });
 
+  //////////////////////////////
+  // edit product state
+  //////////////////////////////
   const handleEditProduct = (product: any) => {
     setSelectedProduct(product);
     setEditProduct({
@@ -196,18 +214,23 @@ export default function MyProductsPage() {
       inventory: product.inventory.toString(),
       category: product.category,
       allowReselling: product.allowReselling,
-      images: product.images,
+      images: product.image,
     });
     setIsEditDialogOpen(true);
   };
 
+  //////////////////////////////
+  // delete product in db
+  //////////////////////////////
   const handleDeleteProduct = (product: any) => {
     setSelectedProduct(product);
     setIsDeleteDialogOpen(true);
   };
 
+  //////////////////////////////
+  // update the product in db
+  //////////////////////////////
   const handleSaveEdit = () => {
-    // Validate form
     if (
       !editProduct.name ||
       !editProduct.description ||
@@ -243,7 +266,6 @@ export default function MyProductsPage() {
       return;
     }
 
-    // update the product in your database
     toast({
       title: "Product updated",
       description: `${editProduct.name} has been updated successfully`,
@@ -251,8 +273,10 @@ export default function MyProductsPage() {
     setIsEditDialogOpen(false);
   };
 
+  //////////////////////////////
+  // delete or archive the product in your database
+  //////////////////////////////
   const handleConfirmDelete = () => {
-    // delete or archive the product in your database
     toast({
       title: "Product removed",
       description: `${selectedProduct.name} has been removed from your products`,
@@ -321,9 +345,7 @@ export default function MyProductsPage() {
       });
       return;
     }
-    // create the product in your database
     setIsAddDialogOpen(false);
-    // Reset form
     setNewProduct({
       name: "",
       description: "",
@@ -336,6 +358,9 @@ export default function MyProductsPage() {
     });
   };
 
+  //////////////////////////////
+  // toggle reselling status
+  //////////////////////////////
   const toggleResellingStatus = (product: any) => {
     // update the product in your database
     toast({
@@ -347,6 +372,18 @@ export default function MyProductsPage() {
       } for ${product.name}`,
     });
   };
+
+  if (loading)
+    return (
+      <div className="container py-10 px-5 sm:px-10 h-screen">
+        <div className="flex flex-col space-y-6">
+          <h1 className="text-3xl font-bold tracking-tight"></h1>
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+          </div>
+        </div>
+      </div>
+    );
 
   return (
     <div className="container py-10 px-5 sm:px-10">
@@ -435,7 +472,10 @@ export default function MyProductsPage() {
                             <TableCell>
                               <div className="flex items-center gap-3">
                                 <Image
-                                  src={product.image || "/placeholder.svg"}
+                                  src={
+                                    product.productImages[0] ||
+                                    "https://www.versaspa-europe.com/media/codazon/subcategories/placeholder/placeholder.jpg"
+                                  }
                                   alt={product.name}
                                   width={40}
                                   height={40}
@@ -467,17 +507,17 @@ export default function MyProductsPage() {
                             <TableCell>
                               <Badge
                                 variant={
-                                  product.status === "active"
+                                  product.status === "in_stock"
                                     ? "default"
                                     : "secondary"
                                 }
                                 className={
-                                  product.status === "active"
+                                  product.status === "in_stock"
                                     ? "bg-green-100 text-green-800 hover:bg-green-100"
                                     : ""
                                 }
                               >
-                                {product.status === "active"
+                                {product.status === "in_stock"
                                   ? "Active"
                                   : "Out of Stock"}
                               </Badge>
@@ -580,7 +620,10 @@ export default function MyProductsPage() {
                             <TableCell>
                               <div className="flex items-center gap-3">
                                 <Image
-                                  src={product.image || "/placeholder.svg"}
+                                  src={
+                                    product.productImages[0] ||
+                                    "https://www.versaspa-europe.com/media/codazon/subcategories/placeholder/placeholder.jpg"
+                                  }
                                   alt={product.name}
                                   width={40}
                                   height={40}
@@ -612,17 +655,17 @@ export default function MyProductsPage() {
                             <TableCell>
                               <Badge
                                 variant={
-                                  product.status === "active"
+                                  product.status === "in_stock"
                                     ? "default"
                                     : "secondary"
                                 }
                                 className={
-                                  product.status === "active"
+                                  product.status === "in_stock"
                                     ? "bg-green-100 text-green-800 hover:bg-green-100"
                                     : ""
                                 }
                               >
-                                {product.status === "active"
+                                {product.status === "in_stock"
                                   ? "Active"
                                   : "Out of Stock"}
                               </Badge>
@@ -734,7 +777,10 @@ export default function MyProductsPage() {
                             <TableCell>
                               <div className="flex items-center gap-3">
                                 <Image
-                                  src={product.image || "/placeholder.svg"}
+                                  src={
+                                    product.productImages[0] ||
+                                    "https://www.versaspa-europe.com/media/codazon/subcategories/placeholder/placeholder.jpg"
+                                  }
                                   alt={product.name}
                                   width={40}
                                   height={40}
@@ -766,17 +812,17 @@ export default function MyProductsPage() {
                             <TableCell>
                               <Badge
                                 variant={
-                                  product.status === "active"
+                                  product.status === "in_stock"
                                     ? "default"
                                     : "secondary"
                                 }
                                 className={
-                                  product.status === "active"
+                                  product.status === "in_stock"
                                     ? "bg-green-100 text-green-800 hover:bg-green-100"
                                     : ""
                                 }
                               >
-                                {product.status === "active"
+                                {product.status === "in_stock"
                                   ? "Active"
                                   : "Out of Stock"}
                               </Badge>
@@ -1032,7 +1078,10 @@ export default function MyProductsPage() {
           {selectedProduct && (
             <div className="flex items-center gap-4">
               <Image
-                src={selectedProduct.image || "/placeholder.svg"}
+                src={
+                  selectedProduct.image ||
+                  "https://www.versaspa-europe.com/media/codazon/subcategories/placeholder/placeholder.jpg"
+                }
                 alt={selectedProduct.name}
                 width={60}
                 height={60}

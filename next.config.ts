@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["ng.jumia.is"],
+    domains: ["res.cloudinary.com", "www.versaspa-europe.com"],
   }
 };
 

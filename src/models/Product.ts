@@ -38,7 +38,7 @@ const ProductSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["In stock", "Out of Stock"],
+      enum: ["in_stock", "out_of_stock"],
       default: "In stock",
     },
     specifications: {
@@ -47,6 +47,10 @@ const ProductSchema = new mongoose.Schema(
     inventory: {
       type: Number,
       required: true,
+    },
+    revenue: {
+      type: Number,
+      default: 0,
     },
     discount: {
       type: Number,
@@ -83,6 +87,13 @@ const ProductSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    toJSON: {
+      transform: function (doc, ret) {
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.__v;
+      },
+    },
   }
 );
 

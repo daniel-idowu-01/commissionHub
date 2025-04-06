@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { ImageUpload } from "@/components/image-upload";
 import { Edit, Eye, Plus, Trash2, Upload } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -155,6 +156,7 @@ export default function MyProductsPage() {
     inventory: 1,
     category: "",
     allowReselling: true,
+    images: [] as string[],
   });
   const [editProduct, setEditProduct] = useState({
     name: "",
@@ -164,6 +166,7 @@ export default function MyProductsPage() {
     inventory: "",
     category: "",
     allowReselling: true,
+    images: [] as string[],
   });
 
   // Filter products based on active tab
@@ -193,6 +196,7 @@ export default function MyProductsPage() {
       inventory: product.inventory.toString(),
       category: product.category,
       allowReselling: product.allowReselling,
+      images: product.images,
     });
     setIsEditDialogOpen(true);
   };
@@ -262,7 +266,8 @@ export default function MyProductsPage() {
       !newProduct.description ||
       !newProduct.basePrice ||
       !newProduct.recommendedPrice ||
-      !newProduct.category
+      !newProduct.category ||
+      newProduct.images.length === 0
     ) {
       toast({
         title: "Missing information",
@@ -327,6 +332,7 @@ export default function MyProductsPage() {
       inventory: 1,
       category: "",
       allowReselling: true,
+      images: [],
     });
   };
 
@@ -943,12 +949,48 @@ export default function MyProductsPage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="edit-images">Product Images</Label>
-                  <div className="flex items-center gap-2">
-                    <Button variant="outline" className="w-full" type="button">
-                      <Upload className="mr-2 h-4 w-4" />
-                      Upload Images
-                    </Button>
-                  </div>
+                  <ImageUpload
+                    multiple
+                    onUpload={(url) => {
+                      setEditProduct((prev) => {
+                        const currentImages = Array.isArray(prev.images)
+                          ? prev.images
+                          : [];
+                        return {
+                          ...prev,
+                          images: [...currentImages, url],
+                        };
+                      });
+                    }}
+                    className="mb-2"
+                  />
+                  {editProduct.images?.length > 0 && (
+                    <div className="grid grid-cols-3 gap-2">
+                      {editProduct.images.map((image, index) => (
+                        <div key={index} className="relative group">
+                          <img
+                            src={image}
+                            alt={`Preview ${index + 1}`}
+                            className="w-full h-24 object-cover rounded-md"
+                          />
+                          <button
+                            type="button"
+                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={() => {
+                              setEditProduct((prev) => ({
+                                ...prev,
+                                images: prev.images.filter(
+                                  (_, i) => i !== index
+                                ),
+                              }));
+                            }}
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="flex items-center space-x-2 pt-2">
@@ -1123,13 +1165,42 @@ export default function MyProductsPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="new-images">Product Images</Label>
-                <div className="flex items-center gap-2">
-                  <Button variant="outline" className="w-full" type="button">
-                    <Upload className="mr-2 h-4 w-4" />
-                    Upload Images
-                  </Button>
-                </div>
+                <Label>Product Images (Required)</Label>
+                <ImageUpload
+                  multiple
+                  onUpload={(url) => {
+                    setNewProduct((prev) => ({
+                      ...prev,
+                      images: [...prev.images, url],
+                    }));
+                  }}
+                  className="mb-2"
+                />
+                {newProduct.images.length > 0 && (
+                  <div className="grid grid-cols-3 gap-2">
+                    {newProduct.images.map((image, index) => (
+                      <div key={index} className="relative group">
+                        <img
+                          src={image}
+                          alt={`Preview ${index + 1}`}
+                          className="w-full h-24 object-cover rounded-md"
+                        />
+                        <button
+                          type="button"
+                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() => {
+                            setNewProduct((prev) => ({
+                              ...prev,
+                              images: prev.images.filter((_, i) => i !== index),
+                            }));
+                          }}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
             <div className="flex items-center space-x-2 pt-2">

@@ -42,6 +42,7 @@ export async function POST(request: Request) {
         recommendedPrice,
         inventory,
         category,
+        images,
       } = await request.json();
 
       const newProduct = await Product.create({
@@ -55,6 +56,7 @@ export async function POST(request: Request) {
         status: "In stock",
         tags: [],
         sellerId: user.id,
+        productImages: images,
       });
 
       if (!newProduct) {

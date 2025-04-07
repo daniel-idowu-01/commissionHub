@@ -46,7 +46,7 @@ export async function POST(request: Request) {
       } = await request.json();
 
       const newProduct = await Product.create({
-        name,
+        name: name.trim(),
         description,
         basePrice,
         recommendedPrice,

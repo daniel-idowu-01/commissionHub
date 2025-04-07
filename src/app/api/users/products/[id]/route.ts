@@ -8,10 +8,20 @@ import { getUserById } from "@/lib/services/userService";
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
+
+    const { id } = await params;
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Product ID is required" },
+        { status: 400 }
+      );
+    }
+
     const cookieStore = cookies();
     const token = (await cookieStore).get("token")?.value;
 
@@ -29,15 +39,6 @@ export async function PUT(
 
       if (!user) {
         return NextResponse.json({ error: "User not found" }, { status: 404 });
-      }
-
-      const { id } = params;
-
-      if (!id) {
-        return NextResponse.json(
-          { error: "Product ID is required" },
-          { status: 400 }
-        );
       }
 
       const updateData = await request.json();
@@ -126,10 +127,20 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
+
+    const { id } = await params;
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Product ID is required" },
+        { status: 400 }
+      );
+    }
+
     const cookieStore = cookies();
     const token = (await cookieStore).get("token")?.value;
 
@@ -148,15 +159,6 @@ export async function DELETE(
 
       if (!user) {
         return NextResponse.json({ error: "User not found" }, { status: 404 });
-      }
-
-      const { id } = params;
-
-      if (!id) {
-        return NextResponse.json(
-          { error: "Product ID is required" },
-          { status: 400 }
-        );
       }
 
       const product = await Product.findOne({ _id: id, sellerId: user.id });

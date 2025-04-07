@@ -882,9 +882,19 @@ export default function MyProductsPage() {
                   <Input
                     id="edit-name"
                     value={editProduct.name}
-                    onChange={(e) =>
-                      setEditProduct({ ...editProduct, name: e.target.value })
-                    }
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const capitalizedValue = value
+                        .split(" ")
+                        .map(
+                          (word) => word.charAt(0).toUpperCase() + word.slice(1)
+                        )
+                        .join(" ");
+                      setEditProduct({
+                        ...editProduct,
+                        name: capitalizedValue,
+                      });
+                    }}
                   />
                 </div>
                 <div className="space-y-2">
@@ -1108,9 +1118,19 @@ export default function MyProductsPage() {
                 <Input
                   id="new-name"
                   value={newProduct.name}
-                  onChange={(e) =>
-                    setNewProduct({ ...newProduct, name: e.target.value })
-                  }
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const capitalizedValue = value
+                      .split(" ")
+                      .map(
+                        (word) => word.charAt(0).toUpperCase() + word.slice(1)
+                      )
+                      .join(" ");
+                    setNewProduct({
+                      ...newProduct,
+                      name: capitalizedValue,
+                    });
+                  }}
                 />
               </div>
               <div className="space-y-2">
@@ -1207,7 +1227,7 @@ export default function MyProductsPage() {
                   }}
                   className="mb-2"
                 />
-                {newProduct.images.length > 0 && (
+                {newProduct.images?.length > 0 && (
                   <div className="grid grid-cols-3 gap-2">
                     {newProduct.images.map((image, index) => (
                       <div key={index} className="relative group">

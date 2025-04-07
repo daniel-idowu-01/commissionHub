@@ -204,7 +204,9 @@ export default function MyProductsPage() {
     }
 
     try {
-      await sendRequest("/api/users/products", "PUT", editProduct);
+      const { id, ...updateData } = editProduct;
+
+      await sendRequest(`/api/users/products/${id}`, "PUT", updateData);
       toast({
         title: "Product updated",
         description: `${editProduct.name} has been updated successfully`,
@@ -224,12 +226,26 @@ export default function MyProductsPage() {
   //////////////////////////////
   // delete or archive the product in your database
   //////////////////////////////
-  const handleConfirmDelete = () => {
-    toast({
-      title: "Product removed",
-      description: `${selectedProduct.name} has been removed from your products`,
-    });
-    setIsDeleteDialogOpen(false);
+  const handleConfirmDelete = async () => {
+    try {
+      await sendRequest(`/api/users/products/${selectedProduct.id}`, "DELETE");
+    
+      // setMyProducts((prevProducts) =>
+      //   prevProducts.filter((product) => product.id !== selectedProduct.id)
+      // );
+      toast({
+        title: "Product removed",
+        description: `${selectedProduct.name} has been removed from your products`,
+      });
+      setIsDeleteDialogOpen(false);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete product",
+        variant: "destructive",
+      });
+      return;
+    }
   };
 
   const handleCreateProduct = async () => {

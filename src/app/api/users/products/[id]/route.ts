@@ -6,15 +6,12 @@ import { connectDB } from "@/lib/mongodb";
 import { NextResponse } from "next/server";
 import { getUserById } from "@/lib/services/userService";
 
-export async function POST(request: Request) {
+export async function PUT(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
   try {
     await connectDB();
-    // const user = getUser(request);
-
-    // if (!user) {
-    //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    // }
-
     const cookieStore = cookies();
     const token = (await cookieStore).get("token")?.value;
 
@@ -28,47 +25,54 @@ export async function POST(request: Request) {
       const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
         id: string;
       };
-
       const user = await getUserById(decoded.id);
 
       if (!user) {
         return NextResponse.json({ error: "User not found" }, { status: 404 });
       }
 
-      const {
-        name,
-        description,
-        basePrice,
-        recommendedPrice,
-        inventory,
-        category,
-        images,
-      } = await request.json();
+      const { id } = params;
 
-      const newProduct = await Product.create({
-        name,
-        description,
-        basePrice,
-        recommendedPrice,
-        inventory,
-        category,
-        allowReselling: true,
-        status: "in_stock",
-        tags: [],
-        sellerId: user.id,
-        productImages: images,
-      });
-
-      if (!newProduct) {
+      if (!id) {
         return NextResponse.json(
-          { error: "Product creation failed" },
+          { error: "Product ID is required" },
+          { status: 400 }
+        );
+      }
+
+      const updateData = await request.json();
+
+      const product = await Product.findOne({ _id: id, sellerId: user.id });
+      if (!product) {
+        return NextResponse.json(
+          { error: "Product not found or not owned by user" },
+          { status: 404 }
+        );
+      }
+
+      const { sellerId, _id, __v, ...safeUpdateData } = updateData;
+
+      const updatedProduct = await Product.findByIdAndUpdate(
+        id,
+        safeUpdateData,
+        {
+          new: true,
+        }
+      );
+
+      if (!updatedProduct) {
+        return NextResponse.json(
+          { error: "Product update failed" },
           { status: 400 }
         );
       }
 
       return NextResponse.json(
-        { message: "Product created successfully" },
-        { status: 201 }
+        {
+          message: "Product updated successfully",
+          product: updatedProduct,
+        },
+        { status: 200 }
       );
     } catch (error: any) {
       if (error instanceof jwt.JsonWebTokenError) {
@@ -90,8 +94,29 @@ export async function POST(request: Request) {
         { status: 500 }
       );
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error:", error);
+    if (error instanceof jwt.JsonWebTokenError) {
+      return NextResponse.json(
+        { error: "Unauthorized - Invalid token" },
+        { status: 401 }
+      );
+    }
+
+    if (error instanceof jwt.TokenExpiredError) {
+      return NextResponse.json(
+        { error: "Token expired. Please login again." },
+        { status: 401 }
+      );
+    }
+
+    if (error instanceof SyntaxError) {
+      return NextResponse.json(
+        { error: "Invalid JSON payload" },
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -99,8 +124,10 @@ export async function POST(request: Request) {
   }
 }
 
-// get user products
-export async function GET(request: Request) {
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
   try {
     await connectDB();
     const cookieStore = cookies();
@@ -113,7 +140,6 @@ export async function GET(request: Request) {
       );
     }
     try {
-      let products;
       const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
         id: string;
       };
@@ -124,12 +150,32 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: "User not found" }, { status: 404 });
       }
 
-      products = await Product.find({ sellerId: user.id });
+      const { id } = params;
 
-      products = products.map((product) => product.toJSON());
+      if (!id) {
+        return NextResponse.json(
+          { error: "Product ID is required" },
+          { status: 400 }
+        );
+      }
 
-      return NextResponse.json(products, { status: 200 });
+      const product = await Product.findOne({ _id: id, sellerId: user.id });
+
+      if (!product) {
+        return NextResponse.json(
+          { error: "Product not found" },
+          { status: 404 }
+        );
+      }
+
+      await Product.findByIdAndDelete(id);
+
+      return NextResponse.json(
+        { message: "Product deleted successfully" },
+        { status: 200 }
+      );
     } catch (error: any) {
+      console.error(22, error);
       if (error instanceof jwt.JsonWebTokenError) {
         return NextResponse.json(
           { error: "Unauthorized - Invalid token" },

@@ -48,7 +48,17 @@ const ProductSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    resellers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     revenue: {
+      type: Number,
+      default: 0,
+    },
+    sales: {
       type: Number,
       default: 0,
     },

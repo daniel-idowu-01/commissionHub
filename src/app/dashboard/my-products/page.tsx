@@ -52,82 +52,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-// Mock data for my products
-// const myProducts = [
-//   {
-//     id: "301",
-//     name: "Premium Bluetooth Speaker",
-//     description:
-//       "High-quality portable bluetooth speaker with 24-hour battery life and waterproof design.",
-//     basePrice: 89.99,
-//     recommendedPrice: 109.99,
-//     inventory: 45,
-//     sales: 78,
-//     revenue: 7019.22,
-//     commissions: 1560.0,
-//     image: "https://www.versaspa-europe.com/media/codazon/subcategories/placeholder/placeholder.jpg?height=80&width=80",
-//     status: "active",
-//     category: "Electronics",
-//     created: "2023-08-15",
-//     allowReselling: true,
-//     resellerCount: 12,
-//   },
-//   {
-//     id: "302",
-//     name: "Ergonomic Office Chair",
-//     description:
-//       "Adjustable office chair with lumbar support and breathable mesh back for all-day comfort.",
-//     basePrice: 199.99,
-//     recommendedPrice: 249.99,
-//     inventory: 18,
-//     sales: 32,
-//     revenue: 6399.68,
-//     commissions: 1600.0,
-//     image: "https://www.versaspa-europe.com/media/codazon/subcategories/placeholder/placeholder.jpg?height=80&width=80",
-//     status: "active",
-//     category: "Home & Office",
-//     created: "2023-09-05",
-//     allowReselling: true,
-//     resellerCount: 8,
-//   },
-//   {
-//     id: "303",
-//     name: "Stainless Steel Water Bottle",
-//     description:
-//       "Double-walled insulated water bottle that keeps drinks cold for 24 hours or hot for 12 hours.",
-//     basePrice: 24.99,
-//     recommendedPrice: 34.99,
-//     inventory: 120,
-//     sales: 95,
-//     revenue: 2374.05,
-//     commissions: 950.0,
-//     image: "https://www.versaspa-europe.com/media/codazon/subcategories/placeholder/placeholder.jpg?height=80&width=80",
-//     status: "active",
-//     category: "Sports & Outdoors",
-//     created: "2023-07-22",
-//     allowReselling: true,
-//     resellerCount: 15,
-//   },
-//   {
-//     id: "304",
-//     name: "Wireless Charging Pad",
-//     description:
-//       "Fast wireless charging pad compatible with all Qi-enabled devices.",
-//     basePrice: 29.99,
-//     recommendedPrice: 39.99,
-//     inventory: 0,
-//     sales: 64,
-//     revenue: 1919.36,
-//     commissions: 640.0,
-//     image: "https://www.versaspa-europe.com/media/codazon/subcategories/placeholder/placeholder.jpg?height=80&width=80",
-//     status: "out_of_stock",
-//     category: "Electronics",
-//     created: "2023-10-10",
-//     allowReselling: false,
-//     resellerCount: 0,
-//   },
-// ];
-
 // Categories for product creation
 const categories = [
   { id: "electronics", name: "Electronics" },
@@ -160,11 +84,12 @@ export default function MyProductsPage() {
     images: [] as string[],
   });
   const [editProduct, setEditProduct] = useState({
+    id: "",
     name: "",
     description: "",
     basePrice: "",
     recommendedPrice: "",
-    inventory: "",
+    inventory: 1,
     category: "",
     allowReselling: true,
     images: [] as string[],
@@ -184,7 +109,9 @@ export default function MyProductsPage() {
     getProducts();
   }, []);
 
+  //////////////////////////////
   // Filter products based on active tab
+  //////////////////////////////
   const filteredProducts = myProducts
     .filter((product) => {
       if (activeTab === "active") return product.status === "in_stock";
@@ -207,6 +134,7 @@ export default function MyProductsPage() {
   const handleEditProduct = (product: any) => {
     setSelectedProduct(product);
     setEditProduct({
+      id: product.id,
       name: product.name,
       description: product.description,
       basePrice: product.basePrice.toString(),
@@ -230,7 +158,7 @@ export default function MyProductsPage() {
   //////////////////////////////
   // update the product in db
   //////////////////////////////
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async () => {
     if (
       !editProduct.name ||
       !editProduct.description ||
@@ -266,10 +194,30 @@ export default function MyProductsPage() {
       return;
     }
 
-    toast({
-      title: "Product updated",
-      description: `${editProduct.name} has been updated successfully`,
-    });
+    if (editProduct.inventory <= 0) {
+      toast({
+        title: "Invalid inventory",
+        description: "Inventory must be a positive number",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      await sendRequest("/api/users/products", "PUT", editProduct);
+      toast({
+        title: "Product updated",
+        description: `${editProduct.name} has been updated successfully`,
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update product",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsEditDialogOpen(false);
   };
 
@@ -502,7 +450,7 @@ export default function MyProductsPage() {
                               ${product.revenue.toFixed(2)}
                             </TableCell>
                             <TableCell className="hidden md:table-cell">
-                              {product.resellerCount}
+                              {product.resellerCount || 0}
                             </TableCell>
                             <TableCell>
                               <Badge
@@ -650,7 +598,7 @@ export default function MyProductsPage() {
                               ${product.revenue.toFixed(2)}
                             </TableCell>
                             <TableCell className="hidden md:table-cell">
-                              {product.resellerCount}
+                              {product.resellerCount || 0}
                             </TableCell>
                             <TableCell>
                               <Badge
@@ -807,7 +755,7 @@ export default function MyProductsPage() {
                               ${product.revenue.toFixed(2)}
                             </TableCell>
                             <TableCell className="hidden md:table-cell">
-                              {product.resellerCount}
+                              {product.resellerCount || 0}
                             </TableCell>
                             <TableCell>
                               <Badge
@@ -988,7 +936,7 @@ export default function MyProductsPage() {
                     onChange={(e) =>
                       setEditProduct({
                         ...editProduct,
-                        inventory: e.target.value,
+                        inventory: parseInt(e.target.value) || 0,
                       })
                     }
                   />

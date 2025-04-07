@@ -173,6 +173,11 @@ export default function MyProductsPage() {
       return;
     }
 
+    setMyProducts((prevProducts) =>
+      prevProducts.map((p) =>
+        p.id === editProduct.id ? { ...p, ...editProduct } : p
+      )
+    );
     const basePrice = Number.parseFloat(editProduct.basePrice);
     const recommendedPrice = Number.parseFloat(editProduct.recommendedPrice);
 
@@ -207,6 +212,7 @@ export default function MyProductsPage() {
       const { id, ...updateData } = editProduct;
 
       await sendRequest(`/api/users/products/${id}`, "PUT", updateData);
+      await refreshProducts();
       toast({
         title: "Product updated",
         description: `${editProduct.name} has been updated successfully`,
@@ -229,10 +235,8 @@ export default function MyProductsPage() {
   const handleConfirmDelete = async () => {
     try {
       await sendRequest(`/api/users/products/${selectedProduct.id}`, "DELETE");
-    
-      // setMyProducts((prevProducts) =>
-      //   prevProducts.filter((product) => product.id !== selectedProduct.id)
-      // );
+
+      await refreshProducts();
       toast({
         title: "Product removed",
         description: `${selectedProduct.name} has been removed from your products`,
@@ -297,6 +301,7 @@ export default function MyProductsPage() {
 
     try {
       await sendRequest("/api/users/products", "POST", newProduct);
+      await refreshProducts();
       toast({
         title: "Product created",
         description: `${newProduct.name} has been created successfully`,
@@ -335,6 +340,19 @@ export default function MyProductsPage() {
         product.allowReselling ? "disabled" : "enabled"
       } for ${product.name}`,
     });
+  };
+
+  //////////////////////////////
+  // refresh products
+  // This function is called after creating, updating, or deleting a product
+  //////////////////////////////
+  const refreshProducts = async () => {
+    try {
+      const products = await sendRequest("/api/users/products", "GET");
+      setMyProducts(products || []);
+    } catch (error) {
+      console.error("Failed to refresh products:", error);
+    }
   };
 
   if (loading)

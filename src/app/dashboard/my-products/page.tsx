@@ -330,16 +330,33 @@ export default function MyProductsPage() {
   //////////////////////////////
   // toggle reselling status
   //////////////////////////////
-  const toggleResellingStatus = (product: any) => {
-    // update the product in your database
-    toast({
-      title: product.allowReselling
-        ? "Reselling disabled"
-        : "Reselling enabled",
-      description: `Reselling has been ${
-        product.allowReselling ? "disabled" : "enabled"
-      } for ${product.name}`,
-    });
+  const toggleResellingStatus = async (product: any) => {
+    try {
+      const response = await sendRequest(
+        `/api/users/products/${product.id}`,
+        "PUT",
+        {
+          allowReselling: !product.allowReselling,
+        }
+      );
+      await refreshProducts();
+      toast({
+        title: product.allowReselling
+          ? "Reselling disabled"
+          : "Reselling enabled",
+        description: `Reselling has been ${
+          product.allowReselling ? "disabled" : "enabled"
+        } for ${product.name}`,
+      });
+    } catch (error: any) {
+      console.error(455, error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update product",
+        variant: "destructive",
+      });
+      return;
+    }
   };
 
   //////////////////////////////

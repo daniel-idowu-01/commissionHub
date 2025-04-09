@@ -340,11 +340,11 @@ export default function ProductPage() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+      <section className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         {/* Product Images */}
         <div className="space-y-4">
           <div
-            className="overflow-hidden rounded-lg border bg-white cursor-pointer"
+            className="overflow-hidden rounded-lg border bg-white cursor-pointer h-[500px] w-full"
             onClick={() => setIsImageModalOpen(true)}
           >
             <Image
@@ -680,9 +680,9 @@ export default function ProductPage() {
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="mt-10 space-y-10">
+      <section className="mt-10 space-y-10">
         <Tabs defaultValue="description">
           <TabsList className="w-full justify-start">
             <TabsTrigger value="description">Description</TabsTrigger>
@@ -931,7 +931,7 @@ export default function ProductPage() {
           <h2 className="text-2xl font-bold">Related Products</h2>
           <RelatedProducts />
         </div>
-      </div>
+      </section>
 
       {/* Share Dialog */}
       <Dialog open={isShareDialogOpen} onOpenChange={setIsShareDialogOpen}>

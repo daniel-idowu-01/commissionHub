@@ -29,6 +29,9 @@ const ProductSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    longDescription: {
+      type: String,
+    },
     basePrice: {
       type: Number,
       required: true,

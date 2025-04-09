@@ -7,10 +7,12 @@ import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { DUMMY_IMAGE } from "@/lib/constants";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ImageUpload } from "@/components/image-upload";
+import { RichTextEditor } from "@/components/rich-text-editor";
 import { Edit, Eye, Plus, Trash2, Upload } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -76,6 +78,7 @@ export default function MyProductsPage() {
   const [newProduct, setNewProduct] = useState({
     name: "",
     description: "",
+    longDescription: "",
     basePrice: "",
     recommendedPrice: "",
     inventory: 1,
@@ -87,6 +90,7 @@ export default function MyProductsPage() {
     id: "",
     name: "",
     description: "",
+    longDescription: "",
     basePrice: "",
     recommendedPrice: "",
     inventory: 1,
@@ -136,6 +140,7 @@ export default function MyProductsPage() {
     setEditProduct({
       id: product.id,
       name: product.name,
+      longDescription: product.longDescription,
       description: product.description,
       basePrice: product.basePrice.toString(),
       recommendedPrice: product.recommendedPrice.toString(),
@@ -255,6 +260,7 @@ export default function MyProductsPage() {
   const handleCreateProduct = async () => {
     if (
       !newProduct.name ||
+      !newProduct.longDescription ||
       !newProduct.description ||
       !newProduct.basePrice ||
       !newProduct.recommendedPrice ||
@@ -317,6 +323,7 @@ export default function MyProductsPage() {
     setIsAddDialogOpen(false);
     setNewProduct({
       name: "",
+      longDescription: "",
       description: "",
       basePrice: "",
       recommendedPrice: "",
@@ -471,10 +478,7 @@ export default function MyProductsPage() {
                             <TableCell>
                               <div className="flex items-center gap-3">
                                 <Image
-                                  src={
-                                    product.productImages[0] ||
-                                    "https://www.versaspa-europe.com/media/codazon/subcategories/placeholder/placeholder.jpg"
-                                  }
+                                  src={product.productImages[0] || DUMMY_IMAGE}
                                   alt={product.name}
                                   width={40}
                                   height={40}
@@ -619,10 +623,7 @@ export default function MyProductsPage() {
                             <TableCell>
                               <div className="flex items-center gap-3">
                                 <Image
-                                  src={
-                                    product.productImages[0] ||
-                                    "https://www.versaspa-europe.com/media/codazon/subcategories/placeholder/placeholder.jpg"
-                                  }
+                                  src={product.productImages[0] || DUMMY_IMAGE}
                                   alt={product.name}
                                   width={40}
                                   height={40}
@@ -776,10 +777,7 @@ export default function MyProductsPage() {
                             <TableCell>
                               <div className="flex items-center gap-3">
                                 <Image
-                                  src={
-                                    product.productImages[0] ||
-                                    "https://www.versaspa-europe.com/media/codazon/subcategories/placeholder/placeholder.jpg"
-                                  }
+                                  src={product.productImages[0] || DUMMY_IMAGE}
                                   alt={product.name}
                                   width={40}
                                   height={40}
@@ -936,7 +934,7 @@ export default function MyProductsPage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-description">Description</Label>
+                <Label htmlFor="edit-description">Short Description</Label>
                 <Textarea
                   id="edit-description"
                   rows={3}
@@ -947,7 +945,21 @@ export default function MyProductsPage() {
                       description: e.target.value,
                     })
                   }
+                  placeholder="A brief description of your product (visible in listings)"
                 />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Detailed Description</Label>
+                <RichTextEditor
+                  content={editProduct.longDescription}
+                  onChange={(value) =>
+                    setEditProduct({ ...editProduct, longDescription: value })
+                  }
+                />
+                <p className="text-sm text-muted-foreground">
+                  This will be shown on the product detail page
+                </p>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -1087,10 +1099,7 @@ export default function MyProductsPage() {
           {selectedProduct && (
             <div className="flex items-center gap-4">
               <Image
-                src={
-                  selectedProduct.image ||
-                  "https://www.versaspa-europe.com/media/codazon/subcategories/placeholder/placeholder.jpg"
-                }
+                src={selectedProduct.image || DUMMY_IMAGE}
                 alt={selectedProduct.name}
                 width={60}
                 height={60}
@@ -1121,7 +1130,7 @@ export default function MyProductsPage() {
 
       {/* Add New Product Dialog */}
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Add New Product</DialogTitle>
             <DialogDescription>
@@ -1129,36 +1138,27 @@ export default function MyProductsPage() {
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="new-name">Product Name</Label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <article className="space-y-2">
+                <Label htmlFor="name">Product Name</Label>
                 <Input
-                  id="new-name"
+                  id="name"
                   value={newProduct.name}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    const capitalizedValue = value
-                      .split(" ")
-                      .map(
-                        (word) => word.charAt(0).toUpperCase() + word.slice(1)
-                      )
-                      .join(" ");
-                    setNewProduct({
-                      ...newProduct,
-                      name: capitalizedValue,
-                    });
-                  }}
+                  onChange={(e) =>
+                    setNewProduct({ ...newProduct, name: e.target.value })
+                  }
                 />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="new-category">Category</Label>
+              </article>
+
+              <article className="space-y-2">
+                <Label htmlFor="category">Category</Label>
                 <Select
                   value={newProduct.category}
                   onValueChange={(value) =>
                     setNewProduct({ ...newProduct, category: value })
                   }
                 >
-                  <SelectTrigger id="new-category">
+                  <SelectTrigger>
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
@@ -1169,24 +1169,44 @@ export default function MyProductsPage() {
                     ))}
                   </SelectContent>
                 </Select>
-              </div>
+              </article>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="new-description">Description</Label>
+
+            {/* Short Description */}
+            <article className="space-y-2">
+              <Label htmlFor="description">Short Description</Label>
               <Textarea
-                id="new-description"
+                id="description"
                 rows={3}
                 value={newProduct.description}
                 onChange={(e) =>
                   setNewProduct({ ...newProduct, description: e.target.value })
                 }
+                placeholder="Brief product summary (visible in listings)"
               />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
+            </article>
+
+            {/* Detailed Description */}
+            <article className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="new-base-price">Base Price ($)</Label>
+                <Label>Detailed Description</Label>
+                <div className="border rounded-lg max-h-[50vh]  overflow-y-auto ">
+                  <RichTextEditor
+                    content={newProduct.longDescription}
+                    onChange={(content) =>
+                      setNewProduct({ ...newProduct, longDescription: content })
+                    }
+                  />
+                </div>
+              </div>
+            </article>
+
+            {/* Pricing and Inventory */}
+            <article className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <section className="space-y-2">
+                <Label htmlFor="basePrice">Base Price ($)</Label>
                 <Input
-                  id="new-base-price"
+                  id="basePrice"
                   type="number"
                   min="0.01"
                   step="0.01"
@@ -1195,13 +1215,11 @@ export default function MyProductsPage() {
                     setNewProduct({ ...newProduct, basePrice: e.target.value })
                   }
                 />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="new-recommended-price">
-                  Recommended Selling Price ($)
-                </Label>
+              </section>
+              <section className="space-y-2">
+                <Label htmlFor="recommendedPrice">Recommended Price ($)</Label>
                 <Input
-                  id="new-recommended-price"
+                  id="recommendedPrice"
                   type="number"
                   min="0.01"
                   step="0.01"
@@ -1213,16 +1231,17 @@ export default function MyProductsPage() {
                     })
                   }
                 />
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="new-inventory">Inventory</Label>
+              </section>
+            </article>
+
+            {/* Inventory and Images */}
+            <article className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <section className="space-y-2">
+                <Label htmlFor="inventory">Inventory</Label>
                 <Input
-                  id="new-inventory"
+                  id="inventory"
                   type="number"
                   min="0"
-                  step="1"
                   value={newProduct.inventory}
                   onChange={(e) =>
                     setNewProduct({
@@ -1231,8 +1250,8 @@ export default function MyProductsPage() {
                     })
                   }
                 />
-              </div>
-              <div className="space-y-2">
+              </section>
+              <section className="space-y-2">
                 <Label>Product Images (Required)</Label>
                 <ImageUpload
                   multiple
@@ -1244,18 +1263,18 @@ export default function MyProductsPage() {
                   }}
                   className="mb-2"
                 />
-                {newProduct.images?.length > 0 && (
-                  <div className="grid grid-cols-3 gap-2">
+                {newProduct.images.length > 0 && (
+                  <div className="grid grid-cols-3 gap-2 max-h-[200px] overflow-y-auto">
                     {newProduct.images.map((image, index) => (
-                      <div key={index} className="relative group">
+                      <div key={index} className="relative aspect-square">
                         <img
                           src={image}
                           alt={`Preview ${index + 1}`}
-                          className="w-full h-24 object-cover rounded-md"
+                          className="w-full h-full object-cover rounded-md"
                         />
                         <button
                           type="button"
-                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center"
                           onClick={() => {
                             setNewProduct((prev) => ({
                               ...prev,
@@ -1269,20 +1288,8 @@ export default function MyProductsPage() {
                     ))}
                   </div>
                 )}
-              </div>
-            </div>
-            <div className="flex items-center space-x-2 pt-2">
-              <Switch
-                id="new-allow-reselling"
-                checked={newProduct.allowReselling}
-                onCheckedChange={(checked) =>
-                  setNewProduct({ ...newProduct, allowReselling: checked })
-                }
-              />
-              <Label htmlFor="new-allow-reselling">
-                Allow other users to resell this product
-              </Label>
-            </div>
+              </section>
+            </article>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>

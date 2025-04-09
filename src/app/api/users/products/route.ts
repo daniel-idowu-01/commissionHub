@@ -37,6 +37,7 @@ export async function POST(request: Request) {
 
       const {
         name,
+        longDescription,
         description,
         basePrice,
         recommendedPrice,
@@ -47,6 +48,7 @@ export async function POST(request: Request) {
 
       const newProduct = await Product.create({
         name: name.trim(),
+        longDescription,
         description,
         basePrice,
         recommendedPrice,
@@ -71,6 +73,7 @@ export async function POST(request: Request) {
         { status: 201 }
       );
     } catch (error: any) {
+      console.error(44, error)
       if (error instanceof jwt.JsonWebTokenError) {
         return NextResponse.json(
           { error: "Unauthorized - Invalid token" },

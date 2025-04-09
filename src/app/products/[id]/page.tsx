@@ -5,6 +5,7 @@ import Image from "next/image";
 import { toast } from "@/lib/toast";
 import { useApi } from "@/hooks/use-api";
 import { useState, useEffect } from "react";
+import { DUMMY_IMAGE } from "@/lib/constants";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -349,7 +350,8 @@ export default function ProductPage() {
           >
             <Image
               src={
-                product?.productImages?.[selectedImage] || "/placeholder.svg"
+                product?.productImages?.[selectedImage] ||
+                DUMMY_IMAGE
               }
               alt={product?.name || "Product Image"}
               width={500}
@@ -367,7 +369,10 @@ export default function ProductPage() {
                 onClick={() => setSelectedImage(index)}
               >
                 <Image
-                  src={image || "/placeholder.svg"}
+                  src={
+                    image ||
+                    DUMMY_IMAGE
+                  }
                   alt={`${product?.name} - Image ${index + 1}`}
                   width={100}
                   height={100}
@@ -387,7 +392,7 @@ export default function ProductPage() {
                 <Image
                   src={
                     product?.productImages?.[selectedImage] ||
-                    "/placeholder.svg"
+                    DUMMY_IMAGE
                   }
                   alt={product?.name || "Product Image"}
                   width={800}
@@ -405,7 +410,7 @@ export default function ProductPage() {
                     onClick={() => setSelectedImage(index)}
                   >
                     <Image
-                      src={image || "/placeholder.svg"}
+                      src={image || DUMMY_IMAGE}
                       alt={`${product?.name} - Image ${index + 1}`}
                       width={64}
                       height={64}
@@ -593,7 +598,8 @@ export default function ProductPage() {
                         <div className="flex items-center gap-4">
                           <Image
                             src={
-                              product?.productImages?.[0] || "/placeholder.svg"
+                              product?.productImages?.[0] ||
+                              DUMMY_IMAGE
                             }
                             alt={product?.name || "Product Image"}
                             width={80}
@@ -946,7 +952,10 @@ export default function ProductPage() {
           <div className="space-y-4">
             <div className="flex items-center gap-4">
               <Image
-                src={product?.productImages?.[0] || "/placeholder.svg"}
+                src={
+                  product?.productImages?.[0] ||
+                  DUMMY_IMAGE
+                }
                 alt={product?.name || "Product Image"}
                 width={80}
                 height={80}

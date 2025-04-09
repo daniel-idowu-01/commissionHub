@@ -65,14 +65,14 @@ const categories = [
 ];
 
 export default function MyProductsPage() {
-  const [myProducts, setMyProducts] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("active");
   const { data, loading, error, sendRequest } = useApi();
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [myProducts, setMyProducts] = useState<any[]>([]);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [newProduct, setNewProduct] = useState({
     name: "",
     description: "",

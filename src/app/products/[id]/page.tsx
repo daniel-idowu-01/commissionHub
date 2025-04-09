@@ -3,6 +3,7 @@ import type React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { toast } from "@/lib/toast";
+import { useApi } from "@/hooks/use-api";
 import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -41,162 +42,168 @@ import {
 } from "@/components/ui/dialog";
 
 // Mock product data
-const products = [
-  {
-    id: "1",
-    name: "Wireless Headphones",
-    description:
-      "Premium noise-cancelling wireless headphones with 30-hour battery life and comfortable over-ear design.",
-    longDescription: `
-    <p>Experience immersive sound with our premium wireless headphones. These over-ear headphones feature advanced noise-cancelling technology that blocks out ambient noise, allowing you to focus on your music or calls.</p>
-    
-    <p>With a 30-hour battery life, you can enjoy your favorite music all day long without worrying about recharging. The comfortable memory foam ear cushions and adjustable headband ensure a perfect fit for extended listening sessions.</p>
-    
-    <h3>Key Features:</h3>
-    <ul>
-      <li>Active noise cancellation technology</li>
-      <li>30-hour battery life</li>
-      <li>Bluetooth 5.0 connectivity</li>
-      <li>Built-in microphone for calls</li>
-      <li>Memory foam ear cushions</li>
-      <li>Foldable design for easy storage</li>
-      <li>Compatible with voice assistants</li>
-    </ul>
-    
-    <h3>What's in the Box:</h3>
-    <ul>
-      <li>Wireless headphones</li>
-      <li>USB-C charging cable</li>
-      <li>3.5mm audio cable</li>
-      <li>Carrying case</li>
-      <li>User manual</li>
-    </ul>
-  `,
-    basePrice: 149.99,
-    images: [
-      "/placeholder.svg?height=500&width=500",
-      "/placeholder.svg?height=500&width=500",
-      "/placeholder.svg?height=500&width=500",
-      "/placeholder.svg?height=500&width=500",
-    ],
-    seller: {
-      name: "AudioTech",
-      rating: 4.8,
-      reviews: 124,
-      products: 15,
-      joined: "2020",
-      id: "seller-1",
-    },
-    category: "Electronics",
-    subcategory: "Audio",
-    rating: 4.8,
-    reviews: 124,
-    bestseller: true,
-    new: false,
-    inStock: true,
-    freeShipping: true,
-    specifications: [
-      { name: "Brand", value: "AudioTech" },
-      { name: "Model", value: "AT-WH100" },
-      { name: "Color", value: "Black" },
-      { name: "Connectivity", value: "Bluetooth 5.0" },
-      { name: "Battery Life", value: "30 hours" },
-      { name: "Charging Time", value: "2 hours" },
-      { name: "Weight", value: "250g" },
-      { name: "Warranty", value: "1 year" },
-    ],
-  },
-  {
-    id: "2",
-    name: "Smart Watch",
-    description:
-      "Fitness and health tracking smartwatch with heart rate monitor, sleep tracking, and 7-day battery life.",
-    longDescription: `
-    <p>Track your fitness goals and monitor your health with our advanced smartwatch. This sleek wearable device features a high-resolution display and a comprehensive suite of health and fitness tracking capabilities.</p>
-    
-    <p>With a 7-day battery life, you can wear it all week without worrying about recharging. The water-resistant design makes it perfect for swimming and other water activities.</p>
-    
-    <h3>Key Features:</h3>
-    <ul>
-      <li>Heart rate monitoring</li>
-      <li>Sleep tracking</li>
-      <li>Step counter and activity tracking</li>
-      <li>Water-resistant (50m)</li>
-      <li>7-day battery life</li>
-      <li>Customizable watch faces</li>
-      <li>Smartphone notifications</li>
-    </ul>
-    
-    <h3>What's in the Box:</h3>
-    <ul>
-      <li>Smartwatch</li>
-      <li>Charging dock</li>
-      <li>User manual</li>
-    </ul>
-  `,
-    basePrice: 199.99,
-    images: [
-      "/placeholder.svg?height=500&width=500",
-      "/placeholder.svg?height=500&width=500",
-      "/placeholder.svg?height=500&width=500",
-    ],
-    seller: {
-      name: "TechWear",
-      rating: 4.6,
-      reviews: 89,
-      products: 8,
-      joined: "2021",
-      id: "seller-2",
-    },
-    category: "Electronics",
-    subcategory: "Wearables",
-    rating: 4.6,
-    reviews: 89,
-    bestseller: false,
-    new: true,
-    inStock: true,
-    freeShipping: true,
-    specifications: [
-      { name: "Brand", value: "TechWear" },
-      { name: "Model", value: "TW-SW200" },
-      { name: "Color", value: "Silver" },
-      { name: "Display", value: "1.3 inch AMOLED" },
-      { name: "Battery Life", value: "7 days" },
-      { name: "Water Resistance", value: "50m" },
-      { name: "Weight", value: "45g" },
-      { name: "Warranty", value: "1 year" },
-    ],
-  },
-];
+// const products = [
+//   {
+//     id: "1",
+//     name: "Wireless Headphones",
+//     description:
+//       "Premium noise-cancelling wireless headphones with 30-hour battery life and comfortable over-ear design.",
+//     longDescription: `
+//     <p>Experience immersive sound with our premium wireless headphones. These over-ear headphones feature advanced noise-cancelling technology that blocks out ambient noise, allowing you to focus on your music or calls.</p>
+
+//     <p>With a 30-hour battery life, you can enjoy your favorite music all day long without worrying about recharging. The comfortable memory foam ear cushions and adjustable headband ensure a perfect fit for extended listening sessions.</p>
+
+//     <h3>Key Features:</h3>
+//     <ul>
+//       <li>Active noise cancellation technology</li>
+//       <li>30-hour battery life</li>
+//       <li>Bluetooth 5.0 connectivity</li>
+//       <li>Built-in microphone for calls</li>
+//       <li>Memory foam ear cushions</li>
+//       <li>Foldable design for easy storage</li>
+//       <li>Compatible with voice assistants</li>
+//     </ul>
+
+//     <h3>What's in the Box:</h3>
+//     <ul>
+//       <li>Wireless headphones</li>
+//       <li>USB-C charging cable</li>
+//       <li>3.5mm audio cable</li>
+//       <li>Carrying case</li>
+//       <li>User manual</li>
+//     </ul>
+//   `,
+//     basePrice: 149.99,
+//     images: [
+//       "/placeholder.svg?height=500&width=500",
+//       "/placeholder.svg?height=500&width=500",
+//       "/placeholder.svg?height=500&width=500",
+//       "/placeholder.svg?height=500&width=500",
+//     ],
+//     seller: {
+//       name: "AudioTech",
+//       rating: 4.8,
+//       reviews: 124,
+//       products: 15,
+//       joined: "2020",
+//       id: "seller-1",
+//     },
+//     category: "Electronics",
+//     subcategory: "Audio",
+//     rating: 4.8,
+//     reviews: 124,
+//     bestseller: true,
+//     new: false,
+//     inStock: true,
+//     freeShipping: true,
+//     specifications: [
+//       { name: "Brand", value: "AudioTech" },
+//       { name: "Model", value: "AT-WH100" },
+//       { name: "Color", value: "Black" },
+//       { name: "Connectivity", value: "Bluetooth 5.0" },
+//       { name: "Battery Life", value: "30 hours" },
+//       { name: "Charging Time", value: "2 hours" },
+//       { name: "Weight", value: "250g" },
+//       { name: "Warranty", value: "1 year" },
+//     ],
+//   },
+// ];
 
 export default function ProductPage() {
   const router = useRouter();
   const params = useParams();
+  const { loading, sendRequest } = useApi();
   const searchParams = useSearchParams();
   const referrerId = searchParams.get("ref");
 
-  // Find the product by ID
   const productId = params.id;
-  const product = products.find((p) => p.id === productId) || products[0];
 
+  interface Review {
+    id: string;
+    rating: number;
+    comment: string;
+  }
+  interface Seller {
+    id: string;
+    name: string;
+    rating: number;
+    reviews: number;
+    products: number;
+    joined: string;
+  }
+
+  interface Specification {
+    name: string;
+    value: string;
+  }
+
+  interface Product {
+    id: string;
+    name: string;
+    productImages: string[];
+    category: string;
+    description: string;
+    longDescription?: string;
+    basePrice: number;
+    recommendedPrice?: number;
+    status: "in_stock" | "out_of_stock";
+    specifications: Specification[];
+    inventory: number;
+    revenue: number;
+    sales: number;
+    discount: number;
+    discountType: "percentage" | "flat";
+    allowReselling: boolean;
+    tags: string[];
+    sellerId: Seller | string;
+    reviews: Review[] | string[];
+    averageRating: number;
+    freeShipping?: boolean;
+    bestSeller?: boolean;
+    new?: boolean;
+  }
+
+  const [quantity, setQuantity] = useState(1);
+  const [commission, setCommission] = useState(0);
+  const [sellingPrice, setSellingPrice] = useState(0);
   const [selectedImage, setSelectedImage] = useState(0);
   const [isInWishlist, setIsInWishlist] = useState(false);
-  const [sellingPrice, setSellingPrice] = useState(product.basePrice * 1.2);
-  const [commission, setCommission] = useState(product.basePrice * 0.2);
   const [markupPercentage, setMarkupPercentage] = useState(20);
+  const [product, setProduct] = useState<Product | null>(null);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
-  const [isListingDialogOpen, setIsListingDialogOpen] = useState(false);
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
-  const [quantity, setQuantity] = useState(1);
+  const [isListingDialogOpen, setIsListingDialogOpen] = useState(false);
+
+  useEffect(() => {
+    const getProducts = async () => {
+      try {
+        const response = await sendRequest(
+          `/api/users/products/${productId}`,
+          "GET"
+        );
+        setProduct(response.product || null);
+        if (response) {
+          setCommission(response.product.basePrice * 0.2);
+          setSellingPrice(response.product.basePrice * 1.2);
+          console.log("sellingPrice", sellingPrice);
+        }
+      } catch (error) {
+        console.error("Failed to fetch product:", error);
+        setProduct(null);
+      }
+    };
+
+    getProducts();
+  }, [productId]);
 
   // Load wishlist state from localStorage
   useEffect(() => {
     const savedWishlist = localStorage.getItem("wishlist");
-    if (savedWishlist) {
+    if (savedWishlist && product) {
       const wishlist = JSON.parse(savedWishlist);
       setIsInWishlist(wishlist.includes(product.id));
     }
-  }, [product.id]);
+  }, [product?.id]);
 
   // Handle wishlist toggle
   const toggleWishlist = () => {
@@ -205,25 +212,24 @@ export default function ProductPage() {
     const wasInWishlist = isInWishlist;
 
     if (isInWishlist) {
-      wishlist = wishlist.filter((id: string) => id !== product.id);
+      wishlist = wishlist.filter((id: string) => id !== product?.id);
     } else {
-      wishlist.push(product.id);
+      wishlist.push(product?.id);
     }
 
     localStorage.setItem("wishlist", JSON.stringify(wishlist));
     setIsInWishlist(!isInWishlist);
 
-    // Show toast notification outside of the state update function
     setTimeout(() => {
       if (wasInWishlist) {
         toast({
           title: "Removed from wishlist",
-          description: `${product.name} has been removed from your wishlist`,
+          description: `${product?.name} has been removed from your wishlist`,
         });
       } else {
         toast({
           title: "Added to wishlist",
-          description: `${product.name} has been added to your wishlist`,
+          description: `${product?.name} has been added to your wishlist`,
         });
       }
     }, 0);
@@ -231,6 +237,7 @@ export default function ProductPage() {
 
   // Handle markup slider change
   const handleMarkupChange = (value: number[]) => {
+    if (!product) return;
     const percentage = value[0];
     setMarkupPercentage(percentage);
     const markup = (product.basePrice * percentage) / 100;
@@ -242,12 +249,17 @@ export default function ProductPage() {
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newPrice = Number.parseFloat(e.target.value.replace(/[^0-9.]/g, ""));
 
-    if (!isNaN(newPrice) && newPrice >= product.basePrice) {
+    if (
+      !isNaN(newPrice) &&
+      product &&
+      typeof product.basePrice === "number" &&
+      newPrice >= product.basePrice
+    ) {
       setSellingPrice(newPrice);
-      const newCommission = newPrice - product.basePrice;
+      const newCommission = newPrice - product?.basePrice;
       setCommission(newCommission);
       const newPercentage = Math.round(
-        (newCommission / product.basePrice) * 100
+        (newCommission / product?.basePrice) * 100
       );
       setMarkupPercentage(newPercentage > 50 ? 50 : newPercentage);
     }
@@ -265,7 +277,7 @@ export default function ProductPage() {
       toast({
         title: "Product listed for sale",
         description: `You're now selling ${
-          product.name
+          product?.name
         } for $${sellingPrice.toFixed(2)}`,
       });
     }, 0);
@@ -294,6 +306,18 @@ export default function ProductPage() {
 
   // If this is a referral link, show a banner
   const isReferralLink = !!referrerId;
+
+  if (loading)
+    return (
+      <div className="container py-10 px-5 sm:px-10 h-screen">
+        <div className="flex flex-col space-y-6">
+          <h1 className="text-3xl font-bold tracking-tight"></h1>
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+          </div>
+        </div>
+      </div>
+    );
 
   return (
     <div className="container py-10 px-5 sm:px-10">
@@ -324,15 +348,17 @@ export default function ProductPage() {
             onClick={() => setIsImageModalOpen(true)}
           >
             <Image
-              src={product.images[selectedImage] || "/placeholder.svg"}
-              alt={product.name}
+              src={
+                product?.productImages?.[selectedImage] || "/placeholder.svg"
+              }
+              alt={product?.name || "Product Image"}
               width={500}
               height={500}
               className="h-full w-full object-cover transition-transform hover:scale-105"
             />
           </div>
           <div className="grid grid-cols-4 gap-2">
-            {product.images.map((image, index) => (
+            {product?.productImages?.map((image, index) => (
               <div
                 key={index}
                 className={`overflow-hidden rounded-lg border bg-white cursor-pointer ${
@@ -342,7 +368,7 @@ export default function ProductPage() {
               >
                 <Image
                   src={image || "/placeholder.svg"}
-                  alt={`${product.name} - Image ${index + 1}`}
+                  alt={`${product?.name} - Image ${index + 1}`}
                   width={100}
                   height={100}
                   className="h-full w-full object-cover"
@@ -355,19 +381,22 @@ export default function ProductPage() {
           <Dialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
             <DialogContent className="max-w-4xl">
               <DialogHeader>
-                <DialogTitle>{product.name}</DialogTitle>
+                <DialogTitle>{product?.name}</DialogTitle>
               </DialogHeader>
               <div className="flex items-center justify-center">
                 <Image
-                  src={product.images[selectedImage] || "/placeholder.svg"}
-                  alt={product.name}
+                  src={
+                    product?.productImages?.[selectedImage] ||
+                    "/placeholder.svg"
+                  }
+                  alt={product?.name || "Product Image"}
                   width={800}
                   height={800}
                   className="max-h-[70vh] w-auto object-contain"
                 />
               </div>
               <div className="flex justify-center gap-2 mt-4">
-                {product.images.map((image, index) => (
+                {/* {product?.productImages.map((image, index) => (
                   <div
                     key={index}
                     className={`overflow-hidden rounded-lg border bg-white cursor-pointer w-16 h-16 ${
@@ -377,13 +406,13 @@ export default function ProductPage() {
                   >
                     <Image
                       src={image || "/placeholder.svg"}
-                      alt={`${product.name} - Image ${index + 1}`}
+                      alt={`${product?.name} - Image ${index + 1}`}
                       width={64}
                       height={64}
                       className="h-full w-full object-cover"
                     />
                   </div>
-                ))}
+                ))} */}
               </div>
             </DialogContent>
           </Dialog>
@@ -394,9 +423,9 @@ export default function ProductPage() {
           <div>
             <div className="flex items-center gap-2">
               <div className="text-sm text-muted-foreground">
-                {product.category} / {product.subcategory}
+                {product?.category} {/* / {product?.subCategory} */}
               </div>
-              {product.bestseller && (
+              {product?.bestSeller && (
                 <Badge
                   variant="secondary"
                   className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100"
@@ -404,7 +433,7 @@ export default function ProductPage() {
                   Bestseller
                 </Badge>
               )}
-              {product.new && (
+              {product?.new && (
                 <Badge
                   variant="secondary"
                   className="bg-green-100 text-green-800 hover:bg-green-100"
@@ -414,7 +443,7 @@ export default function ProductPage() {
               )}
             </div>
 
-            <h1 className="text-3xl font-bold">{product.name}</h1>
+            <h1 className="text-3xl font-bold">{product?.name}</h1>
 
             <div className="mt-2 flex items-center gap-4">
               <div className="flex items-center">
@@ -422,30 +451,34 @@ export default function ProductPage() {
                   <Star
                     key={i}
                     className={`h-5 w-5 ${
-                      i < Math.floor(product.rating)
+                      i < Math.floor(product?.averageRating ?? 0)
                         ? "text-yellow-400 fill-yellow-400"
                         : "text-gray-300"
                     }`}
                   />
                 ))}
                 <span className="ml-2 text-sm font-medium">
-                  {product.rating}
+                  {product?.averageRating}
                 </span>
               </div>
               <div className="text-sm text-muted-foreground">
-                {product.reviews} reviews
+                {product?.reviews?.length || 0} reviews
               </div>
               <div className="text-sm text-muted-foreground">
                 Sold by{" "}
-                <span className="font-medium">{product.seller.name}</span>
+                <span className="font-medium">
+                  {typeof product?.sellerId === "object"
+                    ? product.sellerId.name
+                    : product?.sellerId}
+                </span>
               </div>
             </div>
 
             <div className="mt-4">
               <div className="text-xl font-bold">
-                Base Price: ${product.basePrice.toFixed(2)}
+                Base Price: ${product?.basePrice?.toFixed(2) ?? "0.00"}
               </div>
-              {product.inStock ? (
+              {product?.status === "in_stock" ? (
                 <div className="mt-1 text-sm font-medium text-green-600">
                   In Stock
                 </div>
@@ -454,7 +487,7 @@ export default function ProductPage() {
                   Out of Stock
                 </div>
               )}
-              {product.freeShipping && (
+              {product?.freeShipping && (
                 <div className="mt-1 text-sm text-muted-foreground">
                   Free Shipping
                 </div>
@@ -476,7 +509,7 @@ export default function ProductPage() {
                     <Label htmlFor="base-price">Base Price</Label>
                     <Input
                       id="base-price"
-                      value={`$${product.basePrice.toFixed(2)}`}
+                      value={`$${product?.basePrice?.toFixed(2) ?? "0.00"}`}
                       disabled
                     />
                   </div>
@@ -559,16 +592,21 @@ export default function ProductPage() {
                       <div className="space-y-4 py-4">
                         <div className="flex items-center gap-4">
                           <Image
-                            src={product.images[0] || "/placeholder.svg"}
-                            alt={product.name}
+                            src={
+                              product?.productImages?.[0] || "/placeholder.svg"
+                            }
+                            alt={product?.name || "Product Image"}
                             width={80}
                             height={80}
                             className="rounded-md"
                           />
                           <div>
-                            <h4 className="font-medium">{product.name}</h4>
+                            <h4 className="font-medium">{product?.name}</h4>
                             <p className="text-sm text-muted-foreground">
-                              Sold by {product.seller.name}
+                              Sold by{" "}
+                              {typeof product?.sellerId === "object"
+                                ? product.sellerId.name
+                                : product?.sellerId}
                             </p>
                           </div>
                         </div>
@@ -579,7 +617,7 @@ export default function ProductPage() {
                               Base Price
                             </p>
                             <p className="font-medium">
-                              ${product.basePrice.toFixed(2)}
+                              ${product?.basePrice?.toFixed(2) ?? "0.00"}
                             </p>
                           </div>
                           <div>
@@ -650,7 +688,7 @@ export default function ProductPage() {
             <TabsTrigger value="description">Description</TabsTrigger>
             <TabsTrigger value="specifications">Specifications</TabsTrigger>
             <TabsTrigger value="reviews">
-              Reviews ({product.reviews})
+              Reviews ({product?.reviews?.length || 0})
             </TabsTrigger>
             <TabsTrigger value="seller">Seller Information</TabsTrigger>
           </TabsList>
@@ -658,7 +696,9 @@ export default function ProductPage() {
           <TabsContent value="description" className="mt-6">
             <div
               className="prose max-w-none"
-              dangerouslySetInnerHTML={{ __html: product.longDescription }}
+              dangerouslySetInnerHTML={{
+                __html: product?.longDescription ?? "",
+              }}
             />
           </TabsContent>
 
@@ -666,7 +706,7 @@ export default function ProductPage() {
             <div className="rounded-lg border">
               <table className="w-full">
                 <tbody>
-                  {product.specifications.map((spec, index) => (
+                  {(product?.specifications || []).map((spec, index) => (
                     <tr
                       key={index}
                       className={index % 2 === 0 ? "bg-muted/50" : ""}
@@ -683,14 +723,16 @@ export default function ProductPage() {
           <TabsContent value="reviews" className="mt-6">
             <div className="space-y-6">
               <div className="flex items-center gap-4">
-                <div className="text-5xl font-bold">{product.rating}</div>
+                <div className="text-5xl font-bold">
+                  {product?.averageRating}
+                </div>
                 <div className="space-y-1">
                   <div className="flex">
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}
                         className={`h-5 w-5 ${
-                          i < Math.floor(product.rating)
+                          i < Math.floor(product?.averageRating ?? 0)
                             ? "text-yellow-400 fill-yellow-400"
                             : "text-gray-300"
                         }`}
@@ -698,7 +740,7 @@ export default function ProductPage() {
                     ))}
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    Based on {product.reviews} reviews
+                    Based on {product?.reviews?.length || 0} reviews
                   </div>
                 </div>
               </div>
@@ -796,9 +838,16 @@ export default function ProductPage() {
           <TabsContent value="seller" className="mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>{product.seller.name}</CardTitle>
+                <CardTitle>
+                  {typeof product?.sellerId === "object"
+                    ? product.sellerId.name
+                    : product?.sellerId}
+                </CardTitle>
                 <CardDescription>
-                  Seller since {product.seller.joined}
+                  Seller since{" "}
+                  {typeof product?.sellerId === "object"
+                    ? product.sellerId.joined
+                    : "N/A"}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -808,7 +857,12 @@ export default function ProductPage() {
                       <Star
                         key={i}
                         className={`h-5 w-5 ${
-                          i < Math.floor(product.seller.rating)
+                          i <
+                          Math.floor(
+                            typeof product?.sellerId === "object"
+                              ? product.sellerId.rating
+                              : 0
+                          )
                             ? "text-yellow-400 fill-yellow-400"
                             : "text-gray-300"
                         }`}
@@ -816,7 +870,13 @@ export default function ProductPage() {
                     ))}
                   </div>
                   <div className="text-sm">
-                    {product.seller.rating} rating from {product.seller.reviews}{" "}
+                    {typeof product?.sellerId === "object"
+                      ? product.sellerId.rating
+                      : 0}{" "}
+                    rating from{" "}
+                    {typeof product?.sellerId === "object"
+                      ? product.sellerId.reviews
+                      : 0}{" "}
                     reviews
                   </div>
                 </div>
@@ -824,7 +884,9 @@ export default function ProductPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="rounded-lg border p-4 text-center">
                     <div className="text-2xl font-bold">
-                      {product.seller.products}
+                      {typeof product?.sellerId === "object"
+                        ? product.sellerId.products
+                        : 0}
                     </div>
                     <div className="text-sm text-muted-foreground">
                       Products
@@ -832,7 +894,9 @@ export default function ProductPage() {
                   </div>
                   <div className="rounded-lg border p-4 text-center">
                     <div className="text-2xl font-bold">
-                      {product.seller.reviews}
+                      {typeof product?.sellerId === "object"
+                        ? product.sellerId.reviews
+                        : 0}
                     </div>
                     <div className="text-sm text-muted-foreground">Reviews</div>
                   </div>
@@ -882,16 +946,16 @@ export default function ProductPage() {
           <div className="space-y-4">
             <div className="flex items-center gap-4">
               <Image
-                src={product.images[0] || "/placeholder.svg"}
-                alt={product.name}
+                src={product?.productImages?.[0] || "/placeholder.svg"}
+                alt={product?.name || "Product Image"}
                 width={80}
                 height={80}
                 className="rounded-md"
               />
               <div>
-                <h4 className="font-medium">{product.name}</h4>
+                <h4 className="font-medium">{product?.name}</h4>
                 <p className="text-sm text-muted-foreground">
-                  Base Price: ${product.basePrice.toFixed(2)}
+                  Base Price: ${product?.basePrice?.toFixed(2) ?? "0.00"}
                 </p>
                 <p className="text-sm text-muted-foreground">
                   Your Price: ${sellingPrice.toFixed(2)}
@@ -907,8 +971,8 @@ export default function ProductPage() {
             <div className="space-y-2">
               <h4 className="font-medium">Your Unique Referral Link</h4>
               <ShareLinkGenerator
-                productId={product.id}
-                productName={product.name}
+                productId={product?.id || ""}
+                productName={product?.name || ""}
                 resellerId="your-reseller-id"
               />
               <p className="text-sm text-muted-foreground mt-2">

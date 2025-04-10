@@ -25,20 +25,20 @@ import {
 } from "@/components/ui/sheet";
 
 export default function ProductsPage() {
+  const isInitialMount = useRef(true);
+  const [sortBy, setSortBy] = useState("featured");
   const [searchQuery, setSearchQuery] = useState("");
+  const [ratingFilter, setRatingFilter] = useState(0);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [tempSearchQuery, setTempSearchQuery] = useState("");
+  const [shippingFilter, setShippingFilter] = useState("all");
+  const [productsPerPage, setProductsPerPage] = useState("24");
   const [categoryFilters, setCategoryFilters] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
-  const [ratingFilter, setRatingFilter] = useState(0);
-  const [sortBy, setSortBy] = useState("featured");
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [productsPerPage, setProductsPerPage] = useState("24");
-  const isInitialMount = useRef(true);
   const [availabilityFilter, setAvailabilityFilter] = useState({
     inStock: true,
     onSale: false,
   });
-  const [shippingFilter, setShippingFilter] = useState("all");
   const [featuresFilter, setFeaturesFilter] = useState({
     bestseller: false,
     newArrival: false,

@@ -3,8 +3,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { toast } from "@/lib/toast";
 import { Heart } from "lucide-react";
+import { useApi } from "@/hooks/use-api";
 import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
+import { DUMMY_IMAGE } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,212 +18,212 @@ import {
 } from "@/components/ui/card";
 
 // Mock product data
-const allProducts = [
-  {
-    id: "1",
-    name: "Wireless Headphones",
-    description:
-      "Premium noise-cancelling wireless headphones with 30-hour battery life and comfortable over-ear design.",
-    basePrice: 149.99,
-    image: "/placeholder.svg?height=300&width=300",
-    seller: "AudioTech",
-    category: "Electronics",
-    subcategory: "Audio",
-    rating: 4.8,
-    reviews: 124,
-    bestseller: true,
-    new: false,
-    inStock: true,
-    freeShipping: true,
-  },
-  {
-    id: "2",
-    name: "Smart Watch",
-    description:
-      "Fitness and health tracking smartwatch with heart rate monitor, sleep tracking, and 7-day battery life.",
-    basePrice: 199.99,
-    image: "/placeholder.svg?height=300&width=300",
-    seller: "TechWear",
-    category: "Electronics",
-    subcategory: "Wearables",
-    rating: 4.6,
-    reviews: 89,
-    bestseller: false,
-    new: true,
-    inStock: true,
-    freeShipping: false,
-  },
-  {
-    id: "3",
-    name: "Portable Speaker",
-    description:
-      "Waterproof bluetooth speaker with 20-hour battery life, perfect for outdoor adventures and pool parties.",
-    basePrice: 79.99,
-    image: "/placeholder.svg?height=300&width=300",
-    seller: "SoundGear",
-    category: "Electronics",
-    subcategory: "Audio",
-    rating: 4.5,
-    reviews: 56,
-    bestseller: false,
-    new: false,
-    inStock: true,
-    freeShipping: false,
-  },
-  {
-    id: "4",
-    name: "Digital Camera",
-    description:
-      "4K digital camera with 30x optical zoom, image stabilization, and professional manual controls.",
-    basePrice: 349.99,
-    image: "/placeholder.svg?height=300&width=300",
-    seller: "PhotoPro",
-    category: "Electronics",
-    subcategory: "Cameras",
-    rating: 4.7,
-    reviews: 42,
-    bestseller: false,
-    new: false,
-    inStock: true,
-    freeShipping: false,
-  },
-  {
-    id: "5",
-    name: "Coffee Maker",
-    description:
-      "Programmable coffee maker with thermal carafe, brew strength control, and auto-shutoff feature.",
-    basePrice: 89.99,
-    image: "/placeholder.svg?height=300&width=300",
-    seller: "HomeEssentials",
-    category: "Home & Kitchen",
-    subcategory: "Appliances",
-    rating: 4.4,
-    reviews: 78,
-    bestseller: true,
-    new: false,
-    inStock: true,
-    freeShipping: false,
-  },
-  {
-    id: "6",
-    name: "Yoga Mat",
-    description:
-      "Non-slip, eco-friendly yoga mat with alignment lines and carrying strap, perfect for home or studio use.",
-    basePrice: 39.99,
-    image: "/placeholder.svg?height=300&width=300",
-    seller: "FitLife",
-    category: "Sports & Outdoors",
-    subcategory: "Fitness",
-    rating: 4.9,
-    reviews: 103,
-    bestseller: true,
-    new: false,
-    inStock: true,
-    freeShipping: true,
-  },
-  {
-    id: "7",
-    name: "Mechanical Keyboard",
-    description:
-      "RGB mechanical gaming keyboard with customizable keys, macro support, and ergonomic wrist rest.",
-    basePrice: 129.99,
-    image: "/placeholder.svg?height=300&width=300",
-    seller: "GamerGear",
-    category: "Electronics",
-    subcategory: "Computers",
-    rating: 4.7,
-    reviews: 65,
-    bestseller: false,
-    new: true,
-    inStock: true,
-    freeShipping: false,
-  },
-  {
-    id: "8",
-    name: "Air Purifier",
-    description:
-      "HEPA air purifier with 3-stage filtration, quiet operation, and coverage for rooms up to 500 sq ft.",
-    basePrice: 159.99,
-    image: "/placeholder.svg?height=300&width=300",
-    seller: "CleanAir",
-    category: "Home & Kitchen",
-    subcategory: "Appliances",
-    rating: 4.6,
-    reviews: 91,
-    bestseller: false,
-    new: false,
-    inStock: true,
-    freeShipping: false,
-  },
-  {
-    id: "9",
-    name: "Wireless Earbuds",
-    description:
-      "True wireless earbuds with active noise cancellation, touch controls, and 24-hour battery with case.",
-    basePrice: 99.99,
-    image: "/placeholder.svg?height=300&width=300",
-    seller: "AudioTech",
-    category: "Electronics",
-    subcategory: "Audio",
-    rating: 4.5,
-    reviews: 112,
-    bestseller: true,
-    new: false,
-    inStock: true,
-    freeShipping: false,
-  },
-  {
-    id: "10",
-    name: "Stainless Steel Water Bottle",
-    description:
-      "Vacuum insulated water bottle that keeps drinks cold for 24 hours or hot for 12 hours.",
-    basePrice: 29.99,
-    image: "/placeholder.svg?height=300&width=300",
-    seller: "EcoWare",
-    category: "Sports & Outdoors",
-    subcategory: "Accessories",
-    rating: 4.8,
-    reviews: 87,
-    bestseller: false,
-    new: false,
-    inStock: true,
-    freeShipping: true,
-  },
-  {
-    id: "11",
-    name: "Smart Home Hub",
-    description:
-      "Central smart home controller compatible with major voice assistants and hundreds of smart devices.",
-    basePrice: 129.99,
-    image: "/placeholder.svg?height=300&width=300",
-    seller: "SmartLiving",
-    category: "Electronics",
-    subcategory: "Smart Home",
-    rating: 4.4,
-    reviews: 53,
-    bestseller: false,
-    new: true,
-    inStock: true,
-    freeShipping: false,
-  },
-  {
-    id: "12",
-    name: "Blender",
-    description:
-      "High-performance blender with variable speed control, perfect for smoothies, soups, and more.",
-    basePrice: 69.99,
-    image: "/placeholder.svg?height=300&width=300",
-    seller: "KitchenPro",
-    category: "Home & Kitchen",
-    subcategory: "Appliances",
-    rating: 4.7,
-    reviews: 76,
-    bestseller: false,
-    new: false,
-    inStock: true,
-    freeShipping: false,
-  },
-];
+// const allProducts = [
+//   {
+//     id: "1",
+//     name: "Wireless Headphones",
+//     description:
+//       "Premium noise-cancelling wireless headphones with 30-hour battery life and comfortable over-ear design.",
+//     basePrice: 149.99,
+//     image: "/placeholder.svg?height=300&width=300",
+//     seller: "AudioTech",
+//     category: "Electronics",
+//     subcategory: "Audio",
+//     rating: 4.8,
+//     reviews: 124,
+//     bestseller: true,
+//     new: false,
+//     inStock: true,
+//     freeShipping: true,
+//   },
+//   {
+//     id: "2",
+//     name: "Smart Watch",
+//     description:
+//       "Fitness and health tracking smartwatch with heart rate monitor, sleep tracking, and 7-day battery life.",
+//     basePrice: 199.99,
+//     image: "/placeholder.svg?height=300&width=300",
+//     seller: "TechWear",
+//     category: "Electronics",
+//     subcategory: "Wearables",
+//     rating: 4.6,
+//     reviews: 89,
+//     bestseller: false,
+//     new: true,
+//     inStock: true,
+//     freeShipping: false,
+//   },
+//   {
+//     id: "3",
+//     name: "Portable Speaker",
+//     description:
+//       "Waterproof bluetooth speaker with 20-hour battery life, perfect for outdoor adventures and pool parties.",
+//     basePrice: 79.99,
+//     image: "/placeholder.svg?height=300&width=300",
+//     seller: "SoundGear",
+//     category: "Electronics",
+//     subcategory: "Audio",
+//     rating: 4.5,
+//     reviews: 56,
+//     bestseller: false,
+//     new: false,
+//     inStock: true,
+//     freeShipping: false,
+//   },
+//   {
+//     id: "4",
+//     name: "Digital Camera",
+//     description:
+//       "4K digital camera with 30x optical zoom, image stabilization, and professional manual controls.",
+//     basePrice: 349.99,
+//     image: "/placeholder.svg?height=300&width=300",
+//     seller: "PhotoPro",
+//     category: "Electronics",
+//     subcategory: "Cameras",
+//     rating: 4.7,
+//     reviews: 42,
+//     bestseller: false,
+//     new: false,
+//     inStock: true,
+//     freeShipping: false,
+//   },
+//   {
+//     id: "5",
+//     name: "Coffee Maker",
+//     description:
+//       "Programmable coffee maker with thermal carafe, brew strength control, and auto-shutoff feature.",
+//     basePrice: 89.99,
+//     image: "/placeholder.svg?height=300&width=300",
+//     seller: "HomeEssentials",
+//     category: "Home & Kitchen",
+//     subcategory: "Appliances",
+//     rating: 4.4,
+//     reviews: 78,
+//     bestseller: true,
+//     new: false,
+//     inStock: true,
+//     freeShipping: false,
+//   },
+//   {
+//     id: "6",
+//     name: "Yoga Mat",
+//     description:
+//       "Non-slip, eco-friendly yoga mat with alignment lines and carrying strap, perfect for home or studio use.",
+//     basePrice: 39.99,
+//     image: "/placeholder.svg?height=300&width=300",
+//     seller: "FitLife",
+//     category: "Sports & Outdoors",
+//     subcategory: "Fitness",
+//     rating: 4.9,
+//     reviews: 103,
+//     bestseller: true,
+//     new: false,
+//     inStock: true,
+//     freeShipping: true,
+//   },
+//   {
+//     id: "7",
+//     name: "Mechanical Keyboard",
+//     description:
+//       "RGB mechanical gaming keyboard with customizable keys, macro support, and ergonomic wrist rest.",
+//     basePrice: 129.99,
+//     image: "/placeholder.svg?height=300&width=300",
+//     seller: "GamerGear",
+//     category: "Electronics",
+//     subcategory: "Computers",
+//     rating: 4.7,
+//     reviews: 65,
+//     bestseller: false,
+//     new: true,
+//     inStock: true,
+//     freeShipping: false,
+//   },
+//   {
+//     id: "8",
+//     name: "Air Purifier",
+//     description:
+//       "HEPA air purifier with 3-stage filtration, quiet operation, and coverage for rooms up to 500 sq ft.",
+//     basePrice: 159.99,
+//     image: "/placeholder.svg?height=300&width=300",
+//     seller: "CleanAir",
+//     category: "Home & Kitchen",
+//     subcategory: "Appliances",
+//     rating: 4.6,
+//     reviews: 91,
+//     bestseller: false,
+//     new: false,
+//     inStock: true,
+//     freeShipping: false,
+//   },
+//   {
+//     id: "9",
+//     name: "Wireless Earbuds",
+//     description:
+//       "True wireless earbuds with active noise cancellation, touch controls, and 24-hour battery with case.",
+//     basePrice: 99.99,
+//     image: "/placeholder.svg?height=300&width=300",
+//     seller: "AudioTech",
+//     category: "Electronics",
+//     subcategory: "Audio",
+//     rating: 4.5,
+//     reviews: 112,
+//     bestseller: true,
+//     new: false,
+//     inStock: true,
+//     freeShipping: false,
+//   },
+//   {
+//     id: "10",
+//     name: "Stainless Steel Water Bottle",
+//     description:
+//       "Vacuum insulated water bottle that keeps drinks cold for 24 hours or hot for 12 hours.",
+//     basePrice: 29.99,
+//     image: "/placeholder.svg?height=300&width=300",
+//     seller: "EcoWare",
+//     category: "Sports & Outdoors",
+//     subcategory: "Accessories",
+//     rating: 4.8,
+//     reviews: 87,
+//     bestseller: false,
+//     new: false,
+//     inStock: true,
+//     freeShipping: true,
+//   },
+//   {
+//     id: "11",
+//     name: "Smart Home Hub",
+//     description:
+//       "Central smart home controller compatible with major voice assistants and hundreds of smart devices.",
+//     basePrice: 129.99,
+//     image: "/placeholder.svg?height=300&width=300",
+//     seller: "SmartLiving",
+//     category: "Electronics",
+//     subcategory: "Smart Home",
+//     rating: 4.4,
+//     reviews: 53,
+//     bestseller: false,
+//     new: true,
+//     inStock: true,
+//     freeShipping: false,
+//   },
+//   {
+//     id: "12",
+//     name: "Blender",
+//     description:
+//       "High-performance blender with variable speed control, perfect for smoothies, soups, and more.",
+//     basePrice: 69.99,
+//     image: "/placeholder.svg?height=300&width=300",
+//     seller: "KitchenPro",
+//     category: "Home & Kitchen",
+//     subcategory: "Appliances",
+//     rating: 4.7,
+//     reviews: 76,
+//     bestseller: false,
+//     new: false,
+//     inStock: true,
+//     freeShipping: false,
+//   },
+// ];
 
 // Update the ProductGrid component props interface
 interface ProductGridProps {
@@ -254,7 +256,10 @@ export function ProductGrid({
   featuresFilter = { bestseller: false, newArrival: false, ecoFriendly: false },
 }: ProductGridProps) {
   const [wishlist, setWishlist] = useState<string[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState(allProducts);
+  const { data, loading, error, sendRequest } = useApi();
+  const [isLoading, setIsLoading] = useState(true);
+  const [allProducts, setAllProducts] = useState<any[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
 
   // Load wishlist from localStorage on component mount
   useEffect(() => {
@@ -262,6 +267,22 @@ export function ProductGrid({
     if (savedWishlist) {
       setWishlist(JSON.parse(savedWishlist));
     }
+
+    const getProducts = async () => {
+      try {
+        const products = await sendRequest("/api/users/products", "GET");
+        setAllProducts(products || []);
+        setFilteredProducts(products || []);
+        setIsLoading(false);
+        console.log("Products: ", products);
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+        setAllProducts([]);
+        setFilteredProducts([]);
+        setIsLoading(false);
+      }
+    };
+    getProducts();
   }, []);
 
   // Save wishlist to localStorage whenever it changes
@@ -281,7 +302,7 @@ export function ProductGrid({
           product.name.toLowerCase().includes(query) ||
           product.description.toLowerCase().includes(query) ||
           product.category.toLowerCase().includes(query) ||
-          product.subcategory.toLowerCase().includes(query) ||
+          /* product.subcategory.toLowerCase().includes(query) || */
           product.seller.toLowerCase().includes(query)
       );
     }
@@ -290,8 +311,8 @@ export function ProductGrid({
     if (categoryFilter.length > 0) {
       result = result.filter(
         (product) =>
-          categoryFilter.includes(product.category.toLowerCase()) ||
-          categoryFilter.includes(product.subcategory.toLowerCase())
+          categoryFilter.includes(product.category.toLowerCase()) /* ||
+          categoryFilter.includes(product.subcategory.toLowerCase()) */
       );
     }
 
@@ -371,6 +392,7 @@ export function ProductGrid({
 
     setFilteredProducts(result);
   }, [
+    allProducts,
     searchQuery,
     categoryFilter,
     priceRange,
@@ -421,6 +443,18 @@ export function ProductGrid({
     }, 0);
   };
 
+  if (isLoading)
+    return (
+      <div className="container py-10 px-5 sm:px-10 h-screen">
+        <div className="flex flex-col space-y-6">
+          <h1 className="text-3xl font-bold tracking-tight"></h1>
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+          </div>
+        </div>
+      </div>
+    );
+
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {filteredProducts.length === 0 ? (
@@ -437,7 +471,7 @@ export function ProductGrid({
               <div className="relative">
                 <Link href={`/products/${product.id}`}>
                   <Image
-                    src={product.image || "/placeholder.svg"}
+                    src={product.productImages[0] || DUMMY_IMAGE}
                     alt={product.name}
                     width={300}
                     height={300}
@@ -481,7 +515,7 @@ export function ProductGrid({
             </CardHeader>
             <CardContent className="p-4">
               <div className="text-sm text-muted-foreground mb-1">
-                {product.category} / {product.subcategory}
+                {product.category} / {/* {product.subcategory} */}
               </div>
               <Link
                 href={`/products/${product.id}`}

@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import logger from "@/lib/logger";
 import { getUser } from "@/lib/auth";
 import { cookies } from "next/headers";
 import Product from "@/models/Product";
@@ -8,9 +9,10 @@ import { getUserById } from "@/lib/services/userService";
 
 export async function POST(request: Request) {
   try {
+    logger.info("Creating product...");
     await connectDB();
-    // const user = getUser(request);
 
+    // const user = getUser(request);
     // if (!user) {
     //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     // }
@@ -73,7 +75,7 @@ export async function POST(request: Request) {
         { status: 201 }
       );
     } catch (error: any) {
-      console.error(44, error)
+      logger.error("JWT Error: " + error);
       if (error instanceof jwt.JsonWebTokenError) {
         return NextResponse.json(
           { error: "Unauthorized - Invalid token" },
@@ -94,7 +96,7 @@ export async function POST(request: Request) {
       );
     }
   } catch (error) {
-    console.error("Error:", error);
+    logger.error("Error creating product: " + error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -105,7 +107,14 @@ export async function POST(request: Request) {
 // get user products
 export async function GET(request: Request) {
   try {
+    logger.info("Fetching user products...");
     await connectDB();
+
+    // const user = getUser(request);
+    // if (!user) {
+    //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    // }
+
     const cookieStore = cookies();
     const token = (await cookieStore).get("token")?.value;
 
@@ -133,6 +142,7 @@ export async function GET(request: Request) {
 
       return NextResponse.json(products, { status: 200 });
     } catch (error: any) {
+      logger.error("JWT Error: " + error);
       if (error instanceof jwt.JsonWebTokenError) {
         return NextResponse.json(
           { error: "Unauthorized - Invalid token" },
@@ -153,7 +163,7 @@ export async function GET(request: Request) {
       );
     }
   } catch (error) {
-    console.error("Error:", error);
+    logger.error("Error fetching user products: " + error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

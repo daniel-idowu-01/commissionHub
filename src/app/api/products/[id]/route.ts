@@ -1,10 +1,8 @@
 import jwt from "jsonwebtoken";
-import { getUser } from "@/lib/auth";
-import { cookies } from "next/headers";
+import logger from "@/lib/logger";
 import Product from "@/models/Product";
 import { connectDB } from "@/lib/mongodb";
 import { NextResponse } from "next/server";
-import { getUserById } from "@/lib/services/userService";
 
 //////////////////////////////
 // to fetch specific product
@@ -14,6 +12,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    logger.info("Fetching product...");
     await connectDB();
 
     const { id } = await params;
@@ -33,7 +32,7 @@ export async function GET(
 
       if (!product) {
         return NextResponse.json(
-          { error: "Product fetch failed" },
+          { error: "Product not found!" },
           { status: 400 }
         );
       }
@@ -46,6 +45,7 @@ export async function GET(
         { status: 200 }
       );
     } catch (error: any) {
+      logger.error("Error fetching product: " + error);
       if (error instanceof jwt.JsonWebTokenError) {
         return NextResponse.json(
           { error: "Unauthorized - Invalid token" },
@@ -66,7 +66,7 @@ export async function GET(
       );
     }
   } catch (error: any) {
-    console.error("Error:", error);
+    logger.error("Error: " + error);
     if (error instanceof jwt.JsonWebTokenError) {
       return NextResponse.json(
         { error: "Unauthorized - Invalid token" },

@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import User from "@/models/User";
+import logger from "@/lib/logger";
 import { getUser } from "@/lib/auth";
 import { cookies } from "next/headers";
 import { connectDB } from "@/lib/mongodb";
@@ -7,6 +8,7 @@ import { NextResponse } from "next/server";
 
 export async function DELETE(request: Request) {
   try {
+    logger.info("Deleting user account...");
     await connectDB();
     // const user = getUser(request);
 
@@ -42,6 +44,7 @@ export async function DELETE(request: Request) {
         { status: 200 }
       );
     } catch (error) {
+      logger.error("JWT Error: " + error);
       if (error instanceof jwt.JsonWebTokenError) {
         return NextResponse.json(
           { error: "Unauthorized - Invalid token" },
@@ -51,7 +54,7 @@ export async function DELETE(request: Request) {
 
       if (error instanceof jwt.TokenExpiredError) {
         return NextResponse.json(
-          { error: "Unauthorized - Token expired" },
+          { error: "Token expired. Please login again." },
           { status: 401 }
         );
       }
@@ -62,7 +65,7 @@ export async function DELETE(request: Request) {
       );
     }
   } catch (error) {
-    console.error("Error:", error);
+    logger.error("Error deleting user account: " + error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import User from "@/models/User";
+import logger from "@/lib/logger";
 import Product from "@/models/Product";
 import { connectDB } from "@/lib/mongodb";
 import { NextResponse } from "next/server";
@@ -7,6 +8,7 @@ import { NextResponse } from "next/server";
 // get all products
 export async function GET(request: Request) {
   try {
+    logger.info("Fetching all products...");
     await connectDB();
 
     try {
@@ -22,7 +24,7 @@ export async function GET(request: Request) {
 
       return NextResponse.json(products, { status: 200 });
     } catch (error: any) {
-      console.log(33, error)
+      logger.error("Error fetching products: " + error);
       if (error instanceof jwt.JsonWebTokenError) {
         return NextResponse.json(
           { error: "Unauthorized - Invalid token" },
@@ -43,7 +45,7 @@ export async function GET(request: Request) {
       );
     }
   } catch (error) {
-    console.error("Error:", error);
+    logger.error("Error: " + error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "@/models/User";
+import logger from "@/lib/logger";
 import { getUser } from "@/lib/auth";
 import { cookies } from "next/headers";
 import { connectDB } from "@/lib/mongodb";
@@ -9,6 +10,7 @@ import { passwordRegex } from "@/lib/constants";
 
 export async function PUT(request: Request) {
   try {
+    logger.info("Updating user password...");
     await connectDB();
     // const user = getUser(request);
 
@@ -73,7 +75,7 @@ export async function PUT(request: Request) {
         { status: 200 }
       );
     } catch (error) {
-      console.error("Profile update error:", error);
+      logger.error("Error updating password: " + error);
 
       if (error instanceof jwt.JsonWebTokenError) {
         return NextResponse.json(
@@ -95,7 +97,7 @@ export async function PUT(request: Request) {
       );
     }
   } catch (error) {
-    console.error("Error:", error);
+    logger.error("Error: " + error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

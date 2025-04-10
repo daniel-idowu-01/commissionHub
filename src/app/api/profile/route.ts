@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import User from "@/models/User";
+import logger from "@/lib/logger";
 import { getUser } from "@/lib/auth";
 import { cookies } from "next/headers";
 import { connectDB } from "@/lib/mongodb";
@@ -8,6 +9,7 @@ import { NextResponse } from "next/server";
 //get user profile
 export async function GET(request: Request) {
   try {
+    logger.info("Fetching user profile...");
     await connectDB();
     // const user = getUser(request);
 
@@ -46,14 +48,28 @@ export async function GET(request: Request) {
 
       return NextResponse.json(userData, { status: 200 });
     } catch (error) {
-      console.error("Profile fetch error:", error);
+      console.error("JWT Error:", error);
+      if (error instanceof jwt.JsonWebTokenError) {
+        return NextResponse.json(
+          { error: "Unauthorized - Invalid token" },
+          { status: 401 }
+        );
+      }
+
+      if (error instanceof jwt.TokenExpiredError) {
+        return NextResponse.json(
+          { error: "Unauthorized - Token expired" },
+          { status: 401 }
+        );
+      }
+
       return NextResponse.json(
         { error: "Internal server error" },
         { status: 500 }
       );
     }
   } catch (error) {
-    console.error("Error:", error);
+    logger.error("Error fetching user profile:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

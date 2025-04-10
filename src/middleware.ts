@@ -1,7 +1,9 @@
+import logger from "./lib/logger";
 import { verifyToken } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function middleware(req: NextRequest) {
+  logger.info(`${req.method} ${req.url}`);
   const token = req.cookies.get("token")?.value;
 
   if (!token) {

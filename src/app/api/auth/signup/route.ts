@@ -1,11 +1,13 @@
 import bcrypt from "bcryptjs";
 import User from "@/models/User";
+import logger from "@/lib/logger";
 import { connectDB } from "@/lib/mongodb";
 import { NextResponse } from "next/server";
 import { emailRegex, passwordRegex } from "@/lib/constants";
 
 export async function POST(req: Request) {
   try {
+    logger.info("Signup request received...");
     await connectDB();
     const { firstName, lastName, email, password } = await req.json();
 
@@ -65,6 +67,7 @@ export async function POST(req: Request) {
       { status: 201 }
     );
   } catch (error) {
+    logger.error("Signup error: " + error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }

@@ -1,12 +1,14 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "@/models/User";
+import logger from "@/lib/logger";
 import { cookies } from "next/headers";
 import { connectDB } from "@/lib/mongodb";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
+    logger.info("Login request received...");
     await connectDB();
     const { email, password } = await req.json();
 
@@ -53,7 +55,7 @@ export async function POST(req: Request) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Login error:", error);
+    logger.error("Login error: " + error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

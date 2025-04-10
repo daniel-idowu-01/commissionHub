@@ -75,8 +75,7 @@ export async function PUT(request: Request) {
         { status: 200 }
       );
     } catch (error) {
-      logger.error("Error updating password: " + error);
-
+      logger.error("JWT Error: " + error);
       if (error instanceof jwt.JsonWebTokenError) {
         return NextResponse.json(
           { error: "Unauthorized - Invalid token" },
@@ -97,7 +96,7 @@ export async function PUT(request: Request) {
       );
     }
   } catch (error) {
-    logger.error("Error: " + error);
+    logger.error("Error updating password: " + error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

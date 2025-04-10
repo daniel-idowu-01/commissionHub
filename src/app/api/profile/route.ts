@@ -48,7 +48,7 @@ export async function GET(request: Request) {
 
       return NextResponse.json(userData, { status: 200 });
     } catch (error) {
-      console.error("JWT Error:", error);
+      logger.error("JWT Error: " + error);
       if (error instanceof jwt.JsonWebTokenError) {
         return NextResponse.json(
           { error: "Unauthorized - Invalid token" },
@@ -58,7 +58,7 @@ export async function GET(request: Request) {
 
       if (error instanceof jwt.TokenExpiredError) {
         return NextResponse.json(
-          { error: "Unauthorized - Token expired" },
+          { error: "Token expired. Please login again." },
           { status: 401 }
         );
       }
@@ -124,8 +124,7 @@ export async function PUT(request: Request) {
         { status: 200 }
       );
     } catch (error) {
-      console.error("Profile update error:", error);
-
+      logger.error("JWT Error: " + error);
       if (error instanceof jwt.JsonWebTokenError) {
         return NextResponse.json(
           { error: "Unauthorized - Invalid token" },
@@ -146,7 +145,7 @@ export async function PUT(request: Request) {
       );
     }
   } catch (error) {
-    console.error("Error:", error);
+    logger.error("Profile update error: " + error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

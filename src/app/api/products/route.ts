@@ -11,41 +11,19 @@ export async function GET(request: Request) {
     logger.info("Fetching all products...");
     await connectDB();
 
-    try {
-      let products;
+    let products;
 
-      products = await Product.find({}).populate({
-        path: "sellerId",
-        select: "name",
-        model: User
-      });
+    products = await Product.find({}).populate({
+      path: "sellerId",
+      select: "name",
+      model: User,
+    });
 
-      products = products.map((product) => product.toJSON());
+    products = products.map((product) => product.toJSON());
 
-      return NextResponse.json(products, { status: 200 });
-    } catch (error: any) {
-      logger.error("Error fetching products: " + error);
-      if (error instanceof jwt.JsonWebTokenError) {
-        return NextResponse.json(
-          { error: "Unauthorized - Invalid token" },
-          { status: 401 }
-        );
-      }
-
-      if (error instanceof jwt.TokenExpiredError) {
-        return NextResponse.json(
-          { error: "Token expired. Please login again." },
-          { status: 401 }
-        );
-      }
-
-      return NextResponse.json(
-        { error: "Internal server error" },
-        { status: 500 }
-      );
-    }
+    return NextResponse.json(products, { status: 200 });
   } catch (error) {
-    logger.error("Error: " + error);
+    logger.error("Error fetching all products: " + error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

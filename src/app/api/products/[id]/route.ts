@@ -24,70 +24,27 @@ export async function GET(
       );
     }
 
-    try {
-      const product = await Product.findById(id).populate({
-        path: "sellerId",
-        select: "name",
-      });
+    const product = await Product.findById(id).populate({
+      path: "sellerId",
+      select: "name",
+    });
 
-      if (!product) {
-        return NextResponse.json(
-          { error: "Product not found!" },
-          { status: 400 }
-        );
-      }
-
+    if (!product) {
       return NextResponse.json(
-        {
-          message: "Product fetched successfully",
-          product,
-        },
-        { status: 200 }
-      );
-    } catch (error: any) {
-      logger.error("Error fetching product: " + error);
-      if (error instanceof jwt.JsonWebTokenError) {
-        return NextResponse.json(
-          { error: "Unauthorized - Invalid token" },
-          { status: 401 }
-        );
-      }
-
-      if (error instanceof jwt.TokenExpiredError) {
-        return NextResponse.json(
-          { error: "Token expired. Please login again." },
-          { status: 401 }
-        );
-      }
-
-      return NextResponse.json(
-        { error: "Internal server error" },
-        { status: 500 }
-      );
-    }
-  } catch (error: any) {
-    logger.error("Error: " + error);
-    if (error instanceof jwt.JsonWebTokenError) {
-      return NextResponse.json(
-        { error: "Unauthorized - Invalid token" },
-        { status: 401 }
-      );
-    }
-
-    if (error instanceof jwt.TokenExpiredError) {
-      return NextResponse.json(
-        { error: "Token expired. Please login again." },
-        { status: 401 }
-      );
-    }
-
-    if (error instanceof SyntaxError) {
-      return NextResponse.json(
-        { error: "Invalid JSON payload" },
+        { error: "Product not found!" },
         { status: 400 }
       );
     }
 
+    return NextResponse.json(
+      {
+        message: "Product fetched successfully",
+        product,
+      },
+      { status: 200 }
+    );
+  } catch (error: any) {
+    logger.error("Error fetching product... " + error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

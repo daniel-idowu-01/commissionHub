@@ -4,6 +4,7 @@ import Image from "next/image";
 import { toast } from "@/lib/toast";
 import { useApi } from "@/hooks/use-api";
 import { useState, useEffect } from "react";
+import { CATEGORIES } from "@/lib/constants";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -53,18 +54,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-// Categories for product creation
-const categories = [
-  { id: "electronics", name: "Electronics" },
-  { id: "home-kitchen", name: "Home & Kitchen" },
-  { id: "sports-outdoors", name: "Sports" },
-  { id: "beauty-personal-care", name: "Beauty" },
-  { id: "toys-games", name: "Toys" },
-  { id: "clothing", name: "Fashion" },
-  { id: "books", name: "Books" },
-  { id: "home-office", name: "Home & Office" },
-];
 
 export default function MyProductsPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -924,7 +913,7 @@ export default function MyProductsPage() {
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
                     <SelectContent>
-                      {categories.map((category) => (
+                      {CATEGORIES.map((category) => (
                         <SelectItem key={category.id} value={category.name}>
                           {category.name}
                         </SelectItem>
@@ -1162,7 +1151,7 @@ export default function MyProductsPage() {
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
-                    {categories.map((category) => (
+                    {CATEGORIES.map((category) => (
                       <SelectItem key={category.id} value={category.name}>
                         {category.name}
                       </SelectItem>

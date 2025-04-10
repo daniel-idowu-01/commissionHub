@@ -1,6 +1,7 @@
 "use client";
 import { ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
+import { CATEGORIES } from "@/lib/constants";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
@@ -28,15 +29,6 @@ interface ProductFiltersProps {
   initialPriceRange?: [number, number];
   initialRating?: number;
 }
-
-// Category data with counts
-const categories = [
-  { id: "electronics", name: "Electronics", count: 42 },
-  { id: "home-kitchen", name: "Home & Kitchen", count: 24 },
-  { id: "sports-outdoors", name: "Sports & Outdoors", count: 16 },
-  { id: "beauty-personal-care", name: "Beauty & Personal Care", count: 12 },
-  { id: "toys-games", name: "Toys & Games", count: 8 },
-];
 
 export function ProductFilters({
   className,
@@ -121,7 +113,7 @@ export function ProductFilters({
       <div className="space-y-4">
         <div className="font-medium">Categories</div>
         <div className="space-y-2">
-          {categories.map((category) => (
+          {CATEGORIES.map((category) => (
             <div key={category.id} className="flex items-center space-x-2">
               <Checkbox
                 id={category.id}
@@ -131,7 +123,7 @@ export function ProductFilters({
                 }
               />
               <Label htmlFor={category.id} className="text-sm font-normal">
-                {category.name} ({category.count})
+                {category.name}
               </Label>
             </div>
           ))}

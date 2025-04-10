@@ -179,7 +179,7 @@ export default function ProductPage() {
     const getProducts = async () => {
       try {
         const response = await sendRequest(
-          `/api/users/products/${productId}`,
+          `/api/products/${productId}`,
           "GET"
         );
         setProduct(response.product || null);

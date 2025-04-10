@@ -270,7 +270,7 @@ export function ProductGrid({
 
     const getProducts = async () => {
       try {
-        const products = await sendRequest("/api/users/products", "GET");
+        const products = await sendRequest("/api/products", "GET");
         setAllProducts(products || []);
         setFilteredProducts(products || []);
         setIsLoading(false);
@@ -303,7 +303,7 @@ export function ProductGrid({
           product.description.toLowerCase().includes(query) ||
           product.category.toLowerCase().includes(query) ||
           /* product.subcategory.toLowerCase().includes(query) || */
-          product.seller.toLowerCase().includes(query)
+          product.sellerId.name.toLowerCase().includes(query)
       );
     }
 
@@ -531,7 +531,7 @@ export function ProductGrid({
                   ${product.basePrice.toFixed(2)}
                 </span>
                 <span className="text-sm text-muted-foreground">
-                  by {product.seller}
+                  by {product.sellerId.name}
                 </span>
               </div>
               <div className="mt-2 flex items-center text-sm">

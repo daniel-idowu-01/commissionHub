@@ -17,214 +17,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-// Mock product data
-// const allProducts = [
-//   {
-//     id: "1",
-//     name: "Wireless Headphones",
-//     description:
-//       "Premium noise-cancelling wireless headphones with 30-hour battery life and comfortable over-ear design.",
-//     basePrice: 149.99,
-//     image: "/placeholder.svg?height=300&width=300",
-//     seller: "AudioTech",
-//     category: "Electronics",
-//     subcategory: "Audio",
-//     rating: 4.8,
-//     reviews: 124,
-//     bestseller: true,
-//     new: false,
-//     inStock: true,
-//     freeShipping: true,
-//   },
-//   {
-//     id: "2",
-//     name: "Smart Watch",
-//     description:
-//       "Fitness and health tracking smartwatch with heart rate monitor, sleep tracking, and 7-day battery life.",
-//     basePrice: 199.99,
-//     image: "/placeholder.svg?height=300&width=300",
-//     seller: "TechWear",
-//     category: "Electronics",
-//     subcategory: "Wearables",
-//     rating: 4.6,
-//     reviews: 89,
-//     bestseller: false,
-//     new: true,
-//     inStock: true,
-//     freeShipping: false,
-//   },
-//   {
-//     id: "3",
-//     name: "Portable Speaker",
-//     description:
-//       "Waterproof bluetooth speaker with 20-hour battery life, perfect for outdoor adventures and pool parties.",
-//     basePrice: 79.99,
-//     image: "/placeholder.svg?height=300&width=300",
-//     seller: "SoundGear",
-//     category: "Electronics",
-//     subcategory: "Audio",
-//     rating: 4.5,
-//     reviews: 56,
-//     bestseller: false,
-//     new: false,
-//     inStock: true,
-//     freeShipping: false,
-//   },
-//   {
-//     id: "4",
-//     name: "Digital Camera",
-//     description:
-//       "4K digital camera with 30x optical zoom, image stabilization, and professional manual controls.",
-//     basePrice: 349.99,
-//     image: "/placeholder.svg?height=300&width=300",
-//     seller: "PhotoPro",
-//     category: "Electronics",
-//     subcategory: "Cameras",
-//     rating: 4.7,
-//     reviews: 42,
-//     bestseller: false,
-//     new: false,
-//     inStock: true,
-//     freeShipping: false,
-//   },
-//   {
-//     id: "5",
-//     name: "Coffee Maker",
-//     description:
-//       "Programmable coffee maker with thermal carafe, brew strength control, and auto-shutoff feature.",
-//     basePrice: 89.99,
-//     image: "/placeholder.svg?height=300&width=300",
-//     seller: "HomeEssentials",
-//     category: "Home & Kitchen",
-//     subcategory: "Appliances",
-//     rating: 4.4,
-//     reviews: 78,
-//     bestseller: true,
-//     new: false,
-//     inStock: true,
-//     freeShipping: false,
-//   },
-//   {
-//     id: "6",
-//     name: "Yoga Mat",
-//     description:
-//       "Non-slip, eco-friendly yoga mat with alignment lines and carrying strap, perfect for home or studio use.",
-//     basePrice: 39.99,
-//     image: "/placeholder.svg?height=300&width=300",
-//     seller: "FitLife",
-//     category: "Sports & Outdoors",
-//     subcategory: "Fitness",
-//     rating: 4.9,
-//     reviews: 103,
-//     bestseller: true,
-//     new: false,
-//     inStock: true,
-//     freeShipping: true,
-//   },
-//   {
-//     id: "7",
-//     name: "Mechanical Keyboard",
-//     description:
-//       "RGB mechanical gaming keyboard with customizable keys, macro support, and ergonomic wrist rest.",
-//     basePrice: 129.99,
-//     image: "/placeholder.svg?height=300&width=300",
-//     seller: "GamerGear",
-//     category: "Electronics",
-//     subcategory: "Computers",
-//     rating: 4.7,
-//     reviews: 65,
-//     bestseller: false,
-//     new: true,
-//     inStock: true,
-//     freeShipping: false,
-//   },
-//   {
-//     id: "8",
-//     name: "Air Purifier",
-//     description:
-//       "HEPA air purifier with 3-stage filtration, quiet operation, and coverage for rooms up to 500 sq ft.",
-//     basePrice: 159.99,
-//     image: "/placeholder.svg?height=300&width=300",
-//     seller: "CleanAir",
-//     category: "Home & Kitchen",
-//     subcategory: "Appliances",
-//     rating: 4.6,
-//     reviews: 91,
-//     bestseller: false,
-//     new: false,
-//     inStock: true,
-//     freeShipping: false,
-//   },
-//   {
-//     id: "9",
-//     name: "Wireless Earbuds",
-//     description:
-//       "True wireless earbuds with active noise cancellation, touch controls, and 24-hour battery with case.",
-//     basePrice: 99.99,
-//     image: "/placeholder.svg?height=300&width=300",
-//     seller: "AudioTech",
-//     category: "Electronics",
-//     subcategory: "Audio",
-//     rating: 4.5,
-//     reviews: 112,
-//     bestseller: true,
-//     new: false,
-//     inStock: true,
-//     freeShipping: false,
-//   },
-//   {
-//     id: "10",
-//     name: "Stainless Steel Water Bottle",
-//     description:
-//       "Vacuum insulated water bottle that keeps drinks cold for 24 hours or hot for 12 hours.",
-//     basePrice: 29.99,
-//     image: "/placeholder.svg?height=300&width=300",
-//     seller: "EcoWare",
-//     category: "Sports & Outdoors",
-//     subcategory: "Accessories",
-//     rating: 4.8,
-//     reviews: 87,
-//     bestseller: false,
-//     new: false,
-//     inStock: true,
-//     freeShipping: true,
-//   },
-//   {
-//     id: "11",
-//     name: "Smart Home Hub",
-//     description:
-//       "Central smart home controller compatible with major voice assistants and hundreds of smart devices.",
-//     basePrice: 129.99,
-//     image: "/placeholder.svg?height=300&width=300",
-//     seller: "SmartLiving",
-//     category: "Electronics",
-//     subcategory: "Smart Home",
-//     rating: 4.4,
-//     reviews: 53,
-//     bestseller: false,
-//     new: true,
-//     inStock: true,
-//     freeShipping: false,
-//   },
-//   {
-//     id: "12",
-//     name: "Blender",
-//     description:
-//       "High-performance blender with variable speed control, perfect for smoothies, soups, and more.",
-//     basePrice: 69.99,
-//     image: "/placeholder.svg?height=300&width=300",
-//     seller: "KitchenPro",
-//     category: "Home & Kitchen",
-//     subcategory: "Appliances",
-//     rating: 4.7,
-//     reviews: 76,
-//     bestseller: false,
-//     new: false,
-//     inStock: true,
-//     freeShipping: false,
-//   },
-// ];
-
 // Update the ProductGrid component props interface
 interface ProductGridProps {
   searchQuery?: string;
@@ -534,13 +326,13 @@ export function ProductGrid({
                   by {product.sellerId.name}
                 </span>
               </div>
-              <div className="mt-2 flex items-center text-sm">
+              <div className="mt-2 flex items-center justify-between text-sm">
                 <div className="flex items-center">
                   {[...Array(5)].map((_, i) => (
                     <svg
                       key={i}
                       className={`h-4 w-4 ${
-                        i < Math.floor(product.rating)
+                        i < Math.floor(product.averageRating)
                           ? "text-yellow-400"
                           : "text-gray-300"
                       }`}
@@ -551,10 +343,10 @@ export function ProductGrid({
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                   ))}
-                  <span className="ml-1">{product.rating}</span>
+                  <span className="ml-1">{product.averageRating}</span>
                 </div>
-                <span className="mx-2">•</span>
-                <span>{product.reviews} reviews</span>
+                {/* <span className="mx-2">•</span> */}
+                <span>{product.reviews.length || 0} reviews</span>
               </div>
             </CardContent>
             <CardFooter className="p-4 pt-0 flex justify-between">

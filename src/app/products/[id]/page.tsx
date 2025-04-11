@@ -195,7 +195,6 @@ export default function ProductPage() {
     const getProducts = async () => {
       try {
         const response = await sendRequest(`/api/products/${productId}`, "GET");
-        console.log(response.product);
         setProduct(response.product || null);
         if (response) {
           setCommission(response.product.basePrice * 0.2);
@@ -975,7 +974,10 @@ export default function ProductPage() {
 
         <div className="space-y-6">
           <h2 className="text-2xl font-bold">Related Products</h2>
-          <RelatedProducts />
+          <RelatedProducts
+            category={product?.category || ""}
+            productId={product?.id || ""}
+          />
         </div>
       </section>
 

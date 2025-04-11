@@ -12,6 +12,20 @@ export async function GET(request: Request) {
     await connectDB();
 
     let products;
+    const url = new URL(request.url);
+    const category = url.searchParams.get("category");
+
+    if (category) {
+      products = await Product.find({ category }).populate({
+        path: "sellerId",
+        select: "name",
+        model: User,
+      });
+
+      products = products.map((product) => product.toJSON());
+
+      return NextResponse.json(products, { status: 200 });
+    }
 
     products = await Product.find({}).populate({
       path: "sellerId",

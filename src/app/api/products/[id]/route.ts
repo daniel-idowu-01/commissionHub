@@ -28,7 +28,7 @@ export async function GET(
     const product = await Product.findById(id)
       .populate({
         path: "sellerId",
-        select: "name",
+        select: "name createdAt",
         model: User,
       })
       .populate({

@@ -141,7 +141,7 @@ export default function ProductPage() {
     rating: number;
     reviews: number;
     products: number;
-    joined: string;
+    createdAt: Date;
   }
 
   interface Specification {
@@ -195,6 +195,7 @@ export default function ProductPage() {
     const getProducts = async () => {
       try {
         const response = await sendRequest(`/api/products/${productId}`, "GET");
+        console.log(response.product);
         setProduct(response.product || null);
         if (response) {
           setCommission(response.product.basePrice * 0.2);
@@ -891,12 +892,12 @@ export default function ProductPage() {
                 <CardDescription>
                   Seller since{" "}
                   {typeof product?.sellerId === "object"
-                    ? product.sellerId.joined
+                    ? new Date(product.sellerId.createdAt).getFullYear()
                     : "N/A"}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-center gap-4">
+                {/* <div className="flex items-center gap-4">
                   <div className="flex">
                     {[...Array(5)].map((_, i) => (
                       <Star
@@ -945,7 +946,7 @@ export default function ProductPage() {
                     </div>
                     <div className="text-sm text-muted-foreground">Reviews</div>
                   </div>
-                </div>
+                </div> */}
 
                 <div className="space-y-2">
                   <div className="font-medium">Seller Guarantees:</div>

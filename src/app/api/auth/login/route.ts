@@ -14,10 +14,7 @@ export async function POST(req: Request) {
 
     const user = await User.findOne({ email });
     if (!user) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "User not found" }, { status: 401 });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -41,10 +38,13 @@ export async function POST(req: Request) {
       );
     }
 
+    // const maxAgeInSeconds = 60 * 60 * 24 * 7;
     (await cookies()).set("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       path: "/",
+      maxAge: 60 * 60 * 24,
+      sameSite: "strict",
     });
 
     return NextResponse.json(

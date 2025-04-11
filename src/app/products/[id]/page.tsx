@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { ShareLinkGenerator } from "@/components/share-link-generator";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
@@ -119,11 +120,21 @@ export default function ProductPage() {
 
   const productId = params.id;
 
+  interface ReviewFormData {
+    rating: number;
+    comment: string;
+  }
+
   interface Review {
     id: string;
     rating: number;
     comment: string;
+    createdAt: Date;
+    userId: {
+      name: string;
+    };
   }
+
   interface Seller {
     id: string;
     name: string;
@@ -157,7 +168,7 @@ export default function ProductPage() {
     allowReselling: boolean;
     tags: string[];
     sellerId: Seller | string;
-    reviews: Review[] | string[];
+    reviews: Review[];
     averageRating: number;
     freeShipping?: boolean;
     bestSeller?: boolean;
@@ -173,20 +184,21 @@ export default function ProductPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
   const [isListingDialogOpen, setIsListingDialogOpen] = useState(false);
+  const [reviewForm, setReviewForm] = useState<ReviewFormData>({
+    rating: 5,
+    comment: "",
+  });
 
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const response = await sendRequest(
-          `/api/products/${productId}`,
-          "GET"
-        );
+        const response = await sendRequest(`/api/products/${productId}`, "GET");
         setProduct(response.product || null);
         if (response) {
           setCommission(response.product.basePrice * 0.2);
           setSellingPrice(response.product.basePrice * 1.2);
-          console.log("sellingPrice", sellingPrice);
         }
       } catch (error) {
         console.error("Failed to fetch product:", error);
@@ -234,6 +246,36 @@ export default function ProductPage() {
         });
       }
     }, 0);
+  };
+
+  // Handle review form change
+  const handleReviewSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmittingReview(true);
+
+    try {
+      await sendRequest(
+        `/api/products/${productId}/reviews`,
+        "POST",
+        reviewForm
+      );
+      toast({
+        title: "Review submitted",
+        description: "Thank you for your feedback!",
+      });
+      setReviewForm({ rating: 5, comment: "" });
+
+      const response = await sendRequest(`/api/products/${productId}`, "GET");
+      setProduct(response.product);
+    } catch (error: any) {
+      toast({
+        title: "Error submitting review",
+        description: error.message || "Please try again later",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmittingReview(false);
+    }
   };
 
   // Handle markup slider change
@@ -349,10 +391,7 @@ export default function ProductPage() {
             onClick={() => setIsImageModalOpen(true)}
           >
             <Image
-              src={
-                product?.productImages?.[selectedImage] ||
-                DUMMY_IMAGE
-              }
+              src={product?.productImages?.[selectedImage] || DUMMY_IMAGE}
               alt={product?.name || "Product Image"}
               width={500}
               height={500}
@@ -369,10 +408,7 @@ export default function ProductPage() {
                 onClick={() => setSelectedImage(index)}
               >
                 <Image
-                  src={
-                    image ||
-                    DUMMY_IMAGE
-                  }
+                  src={image || DUMMY_IMAGE}
                   alt={`${product?.name} - Image ${index + 1}`}
                   width={100}
                   height={100}
@@ -390,10 +426,7 @@ export default function ProductPage() {
               </DialogHeader>
               <div className="flex items-center justify-center">
                 <Image
-                  src={
-                    product?.productImages?.[selectedImage] ||
-                    DUMMY_IMAGE
-                  }
+                  src={product?.productImages?.[selectedImage] || DUMMY_IMAGE}
                   alt={product?.name || "Product Image"}
                   width={800}
                   height={800}
@@ -597,10 +630,7 @@ export default function ProductPage() {
                       <div className="space-y-4 py-4">
                         <div className="flex items-center gap-4">
                           <Image
-                            src={
-                              product?.productImages?.[0] ||
-                              DUMMY_IMAGE
-                            }
+                            src={product?.productImages?.[0] || DUMMY_IMAGE}
                             alt={product?.name || "Product Image"}
                             width={80}
                             height={80}
@@ -753,90 +783,99 @@ export default function ProductPage() {
 
               <Separator />
 
-              <div className="space-y-4">
-                {/* Mock reviews */}
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <div className="font-medium">Sarah J.</div>
-                    <div className="text-sm text-muted-foreground">
-                      2 weeks ago
+              <Card>
+                <CardHeader>
+                  <CardTitle>Write a Review</CardTitle>
+                  <CardDescription>
+                    Share your experience with this product
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleReviewSubmit} className="space-y-4">
+                    <div>
+                      <Label>Rating</Label>
+                      <div className="flex items-center gap-2 mt-2">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <button
+                            key={star}
+                            type="button"
+                            onClick={() =>
+                              setReviewForm({ ...reviewForm, rating: star })
+                            }
+                            className="focus:outline-none"
+                          >
+                            <Star
+                              className={`h-6 w-6 ${
+                                star <= reviewForm.rating
+                                  ? "text-yellow-400 fill-yellow-400"
+                                  : "text-gray-300"
+                              }`}
+                            />
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`h-4 w-4 ${
-                          i < 5
-                            ? "text-yellow-400 fill-yellow-400"
-                            : "text-gray-300"
-                        }`}
+
+                    <div className="space-y-2">
+                      <Label htmlFor="review-comment">Your Review</Label>
+                      <Textarea
+                        id="review-comment"
+                        value={reviewForm.comment}
+                        onChange={(e) =>
+                          setReviewForm({
+                            ...reviewForm,
+                            comment: e.target.value,
+                          })
+                        }
+                        placeholder="What did you like or dislike about this product?"
+                        rows={4}
+                        required
                       />
-                    ))}
-                  </div>
-                  <p>
-                    Absolutely love this product! The quality is exceptional and
-                    it works exactly as described.
-                  </p>
-                </div>
-
-                <Separator />
-
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <div className="font-medium">Michael T.</div>
-                    <div className="text-sm text-muted-foreground">
-                      1 month ago
                     </div>
-                  </div>
-                  <div className="flex">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`h-4 w-4 ${
-                          i < 4
-                            ? "text-yellow-400 fill-yellow-400"
-                            : "text-gray-300"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <p>
-                    Great product for the price. Shipping was fast and the item
-                    arrived in perfect condition.
-                  </p>
-                </div>
 
-                <Separator />
+                    <Button type="submit" disabled={isSubmittingReview}>
+                      {isSubmittingReview ? "Submitting..." : "Submit Review"}
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
 
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <div className="font-medium">Emily R.</div>
-                    <div className="text-sm text-muted-foreground">
-                      2 months ago
+              <Separator />
+
+              {/* Reviews List */}
+              <div className="space-y-6">
+                <h3 className="text-lg font-semibold">Customer Reviews</h3>
+
+                {product?.reviews?.length ? (
+                  product.reviews.map((review) => (
+                    <div key={review.id} className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <div className="font-medium">{review.userId.name}</div>
+                        <div className="text-sm text-muted-foreground">
+                          {new Date(review.createdAt).toLocaleDateString()}
+                        </div>
+                      </div>
+                      <div className="flex">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`h-4 w-4 ${
+                              i < review.rating
+                                ? "text-yellow-400 fill-yellow-400"
+                                : "text-gray-300"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      <p className="text-sm">{review.comment}</p>
+                      <Separator />
                     </div>
-                  </div>
-                  <div className="flex">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`h-4 w-4 ${
-                          i < 5
-                            ? "text-yellow-400 fill-yellow-400"
-                            : "text-gray-300"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <p>
-                    I've tried many similar products and this one is by far the
-                    best. Highly recommend!
+                  ))
+                ) : (
+                  <p className="text-muted-foreground">
+                    No reviews yet. Be the first to review!
                   </p>
-                </div>
-
-                <Button variant="outline" className="w-full">
-                  Load More Reviews
-                </Button>
+                )}
               </div>
             </div>
           </TabsContent>
@@ -866,7 +905,7 @@ export default function ProductPage() {
                           i <
                           Math.floor(
                             typeof product?.sellerId === "object"
-                              ? product.sellerId.rating
+                              ? product.averageRating
                               : 0
                           )
                             ? "text-yellow-400 fill-yellow-400"
@@ -952,10 +991,7 @@ export default function ProductPage() {
           <div className="space-y-4">
             <div className="flex items-center gap-4">
               <Image
-                src={
-                  product?.productImages?.[0] ||
-                  DUMMY_IMAGE
-                }
+                src={product?.productImages?.[0] || DUMMY_IMAGE}
                 alt={product?.name || "Product Image"}
                 width={80}
                 height={80}

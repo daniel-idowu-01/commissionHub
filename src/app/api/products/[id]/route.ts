@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import User from "@/models/User";
 import logger from "@/lib/logger";
 import Product from "@/models/Product";
 import { connectDB } from "@/lib/mongodb";
@@ -24,10 +25,21 @@ export async function GET(
       );
     }
 
-    const product = await Product.findById(id).populate({
-      path: "sellerId",
-      select: "name",
-    });
+    const product = await Product.findById(id)
+      .populate({
+        path: "sellerId",
+        select: "name",
+        model: User,
+      })
+      .populate({
+        path: "reviews",
+        model: "Review",
+        populate: {
+          path: "userId",
+          select: "name",
+          model: "User",
+        },
+      });
 
     if (!product) {
       return NextResponse.json(

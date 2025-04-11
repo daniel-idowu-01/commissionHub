@@ -608,6 +608,7 @@ export default function ProductPage() {
                     className="flex-1"
                     variant="secondary"
                     onClick={handleBuyNow}
+                    disabled={product?.status !== "in_stock" || loading}
                   >
                     Buy Now
                   </Button>
@@ -617,7 +618,12 @@ export default function ProductPage() {
                     onOpenChange={setIsListingDialogOpen}
                   >
                     <DialogTrigger asChild>
-                      <Button variant="outline">Sell This Product</Button>
+                      <Button
+                        variant="outline"
+                        disabled={product?.status !== "in_stock" || loading}
+                      >
+                        Sell This Product
+                      </Button>
                     </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>

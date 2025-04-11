@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
+import { Product, ReviewFormData } from "@/types";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { ShareLinkGenerator } from "@/components/share-link-generator";
@@ -119,62 +120,7 @@ export default function ProductPage() {
   const referrerId = searchParams.get("ref");
 
   const productId = params.id;
-
-  interface ReviewFormData {
-    rating: number;
-    comment: string;
-  }
-
-  interface Review {
-    id: string;
-    rating: number;
-    comment: string;
-    createdAt: Date;
-    userId: {
-      name: string;
-    };
-  }
-
-  interface Seller {
-    id: string;
-    name: string;
-    rating: number;
-    reviews: number;
-    products: number;
-    createdAt: Date;
-  }
-
-  interface Specification {
-    name: string;
-    value: string;
-  }
-
-  interface Product {
-    id: string;
-    name: string;
-    productImages: string[];
-    category: string;
-    description: string;
-    longDescription?: string;
-    basePrice: number;
-    recommendedPrice?: number;
-    status: "in_stock" | "out_of_stock";
-    specifications: Specification[];
-    inventory: number;
-    revenue: number;
-    sales: number;
-    discount: number;
-    discountType: "percentage" | "flat";
-    allowReselling: boolean;
-    tags: string[];
-    sellerId: Seller | string;
-    reviews: Review[];
-    averageRating: number;
-    freeShipping?: boolean;
-    bestSeller?: boolean;
-    new?: boolean;
-  }
-
+  
   const [quantity, setQuantity] = useState(1);
   const [commission, setCommission] = useState(0);
   const [sellingPrice, setSellingPrice] = useState(0);

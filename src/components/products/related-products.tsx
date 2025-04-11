@@ -4,6 +4,7 @@ import Image from "next/image";
 import { toast } from "@/lib/toast";
 import { Heart } from "lucide-react";
 import { useApi } from "@/hooks/use-api";
+import { Product } from "@/types";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,94 +16,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-// Mock related products data
-// const relatedProducts = [
-//   {
-//     id: "3",
-//     name: "Portable Speaker",
-//     description: "Waterproof bluetooth speaker with 20-hour battery life.",
-//     basePrice: 79.99,
-//     image: "/placeholder.svg?height=200&width=200",
-//     seller: "SoundGear",
-//     rating: 4.5,
-//   },
-//   {
-//     id: "7",
-//     name: "Mechanical Keyboard",
-//     description: "RGB mechanical gaming keyboard with customizable keys.",
-//     basePrice: 129.99,
-//     image: "/placeholder.svg?height=200&width=200",
-//     seller: "GamerGear",
-//     rating: 4.7,
-//   },
-//   {
-//     id: "9",
-//     name: "Wireless Earbuds",
-//     description: "True wireless earbuds with active noise cancellation.",
-//     basePrice: 99.99,
-//     image: "/placeholder.svg?height=200&width=200",
-//     seller: "AudioTech",
-//     rating: 4.5,
-//   },
-//   {
-//     id: "11",
-//     name: "Smart Home Hub",
-//     description:
-//       "Central smart home controller compatible with major voice assistants.",
-//     basePrice: 129.99,
-//     image: "/placeholder.svg?height=200&width=200",
-//     seller: "SmartLiving",
-//     rating: 4.4,
-//   },
-// ];
-
 interface RelatedProductsProps {
   category: string;
   productId: string;
-}
-
-interface Review {
-  id: string;
-  rating: number;
-  comment: string;
-  createdAt: Date;
-  userId: {
-    name: string;
-  };
-}
-
-interface Seller {
-  id: string;
-  name: string;
-  rating: number;
-  reviews: number;
-  products: number;
-  createdAt: Date;
-}
-
-interface Product {
-  id: string;
-  name: string;
-  productImages: string[];
-  category: string;
-  description: string;
-  longDescription?: string;
-  basePrice: number;
-  recommendedPrice?: number;
-  status: "in_stock" | "out_of_stock";
-  inventory: number;
-  revenue: number;
-  sales: number;
-  discount: number;
-  discountType: "percentage" | "flat";
-  allowReselling: boolean;
-  tags: string[];
-  sellerId: Seller | string;
-  reviews: Review[];
-  averageRating: number;
-  freeShipping?: boolean;
-  bestSeller?: boolean;
-  new?: boolean;
 }
 
 export function RelatedProducts({ category, productId }: RelatedProductsProps) {

@@ -1,9 +1,9 @@
 "use client";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
 import { useApi } from "@/hooks/use-api";
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,10 +23,27 @@ export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
   const { sendRequest } = useApi();
-  const { user, clearUser } = useUserStore();
+  const { user, setUser, clearUser } = useUserStore();
   const [isOpen, setIsOpen] = useState(false);
 
-  const isAuthenticated = user ? true : false;
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await sendRequest("/api/auth/me", "GET");
+        if (response.authenticated) {
+          setUser(response.user);
+        } else {
+          clearUser();
+        }
+      } catch (error) {
+        clearUser();
+      }
+    };
+
+    checkAuth();
+  }, []);
+
+  const isAuthenticated = !!user;
 
   // Mock cart count
   const cartCount = 2;

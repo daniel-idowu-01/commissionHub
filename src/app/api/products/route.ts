@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import User from "@/models/User";
 import logger from "@/lib/logger";
 import Product from "@/models/Product";
+import Reviews from "@/models/Reviews";
 import { connectDB } from "@/lib/mongodb";
 import { NextResponse } from "next/server";
 
@@ -24,11 +25,11 @@ export async function GET(request: Request) {
         })
         .populate({
           path: "reviews",
-          model: "Review",
+          model: Reviews,
           populate: {
             path: "userId",
             select: "name",
-            model: "User",
+            model: User,
           },
         });
 

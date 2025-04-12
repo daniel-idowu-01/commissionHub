@@ -446,7 +446,7 @@ export default function ProductPage() {
                 </span>
               </div>
               <div className="text-sm text-muted-foreground">
-                {product?.reviews?.length || 0} reviews
+                {product?.reviews?.length || 0} review(s)
               </div>
               <div className="text-sm text-muted-foreground">
                 Sold by{" "}

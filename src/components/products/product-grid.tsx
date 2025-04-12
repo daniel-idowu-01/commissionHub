@@ -116,7 +116,7 @@ export function ProductGrid({
 
     // Apply rating filter
     if (ratingFilter > 0) {
-      result = result.filter((product) => product.rating >= ratingFilter);
+      result = result.filter((product) => product.averageRating >= ratingFilter);
     }
 
     // Apply availability filter
@@ -346,7 +346,7 @@ export function ProductGrid({
                   <span className="ml-1">{product.averageRating}</span>
                 </div>
                 {/* <span className="mx-2">•</span> */}
-                <span>{product.reviews.length || 0} reviews</span>
+                <span>{product.reviews.length || 0} review(s)</span>
               </div>
             </CardContent>
             <CardFooter className="p-4 pt-0 flex justify-between">

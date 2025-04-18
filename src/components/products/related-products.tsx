@@ -1,10 +1,11 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
+import { Product } from "@/types";
 import { toast } from "@/lib/toast";
 import { Heart } from "lucide-react";
 import { useApi } from "@/hooks/use-api";
-import { Product } from "@/types";
+import Spinner from "@/components/spinner";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -39,7 +40,7 @@ export function RelatedProducts({ category, productId }: RelatedProductsProps) {
           `/api/products/?category=${category}`,
           "GET"
         );
-        
+
         const filteredProducts = response.filter(
           (product: Product) => product.id !== productId
         );
@@ -96,17 +97,7 @@ export function RelatedProducts({ category, productId }: RelatedProductsProps) {
     });
   };
 
-  if (loading)
-    return (
-      <div className="container py-10 px-5 sm:px-10">
-        <div className="flex flex-col space-y-6">
-          <h1 className="text-3xl font-bold tracking-tight"></h1>
-          <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-          </div>
-        </div>
-      </div>
-    );
+  if (loading) return <Spinner />;
 
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">

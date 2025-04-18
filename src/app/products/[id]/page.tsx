@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { toast } from "@/lib/toast";
 import { useApi } from "@/hooks/use-api";
+import Spinner from "@/components/spinner";
 import { useState, useEffect } from "react";
 import { DUMMY_IMAGE } from "@/lib/constants";
 import { Badge } from "@/components/ui/badge";
@@ -300,17 +301,7 @@ export default function ProductPage() {
   // If this is a referral link, show a banner
   const isReferralLink = !!referrerId;
 
-  if (isProductLoading)
-    return (
-      <div className="container py-10 px-5 sm:px-10 h-screen">
-        <div className="flex flex-col space-y-6">
-          <h1 className="text-3xl font-bold tracking-tight"></h1>
-          <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-          </div>
-        </div>
-      </div>
-    );
+  if (isProductLoading) return <Spinner />;
 
   return (
     <div className="container py-10 px-5 sm:px-10">

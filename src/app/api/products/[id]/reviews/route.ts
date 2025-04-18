@@ -92,29 +92,27 @@ export async function POST(
 
       const totalRating = await Reviews.aggregate([
         {
-          $match: { 
-            productId: new mongoose.Types.ObjectId(id) // Ensure proper ObjectId conversion
-          }
+          $match: {
+            productId: new mongoose.Types.ObjectId(id), // Ensure proper ObjectId conversion
+          },
         },
         {
           $group: {
             _id: null,
             rating: { $sum: "$rating" },
-            count: { $sum: 1 } // Add count to verify matches
-          }
-        }
+            count: { $sum: 1 }, // Add count to verify matches
+          },
+        },
       ]);
 
-    //   if (totalRating.length === 0) {
-    //     return NextResponse.json(
-    //       { error: "No ratings found" },
-    //       { status: 400 }
-    //     );
-    //   }
+      //   if (totalRating.length === 0) {
+      //     return NextResponse.json(
+      //       { error: "No ratings found" },
+      //       { status: 400 }
+      //     );
+      //   }
 
-      const averageRating = Math.round(
-        totalRating[0].rating / reviewsCount
-      );
+      const averageRating = Math.round(totalRating[0].rating / reviewsCount);
 
       await Product.findByIdAndUpdate(
         id,

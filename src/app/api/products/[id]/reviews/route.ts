@@ -34,7 +34,7 @@ export async function POST(
 
     if (!token) {
       return NextResponse.json(
-        { error: "Unauthorized - No token provided" },
+        { error: "Kindly login to submit a review" },
         { status: 401 }
       );
     }

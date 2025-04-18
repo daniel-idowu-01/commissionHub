@@ -115,12 +115,12 @@ import {
 export default function ProductPage() {
   const router = useRouter();
   const params = useParams();
-  const { loading, sendRequest } = useApi();
+  const { sendRequest } = useApi();
   const searchParams = useSearchParams();
   const referrerId = searchParams.get("ref");
 
   const productId = params.id;
-  
+
   const [quantity, setQuantity] = useState(1);
   const [commission, setCommission] = useState(0);
   const [sellingPrice, setSellingPrice] = useState(0);
@@ -130,6 +130,7 @@ export default function ProductPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
+  const [isProductLoading, setIsProductLoading] = useState(false);
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
   const [isListingDialogOpen, setIsListingDialogOpen] = useState(false);
   const [reviewForm, setReviewForm] = useState<ReviewFormData>({
@@ -139,6 +140,7 @@ export default function ProductPage() {
 
   useEffect(() => {
     const getProducts = async () => {
+      setIsProductLoading(true);
       try {
         const response = await sendRequest(`/api/products/${productId}`, "GET");
         setProduct(response.product || null);
@@ -149,6 +151,8 @@ export default function ProductPage() {
       } catch (error) {
         console.error("Failed to fetch product:", error);
         setProduct(null);
+      } finally {
+        setIsProductLoading(false);
       }
     };
 
@@ -296,7 +300,7 @@ export default function ProductPage() {
   // If this is a referral link, show a banner
   const isReferralLink = !!referrerId;
 
-  if (loading)
+  if (isProductLoading)
     return (
       <div className="container py-10 px-5 sm:px-10 h-screen">
         <div className="flex flex-col space-y-6">
@@ -554,7 +558,7 @@ export default function ProductPage() {
                     className="flex-1"
                     variant="secondary"
                     onClick={handleBuyNow}
-                    disabled={product?.status !== "in_stock" || loading}
+                    disabled={product?.status !== "in_stock"}
                   >
                     Buy Now
                   </Button>
@@ -566,7 +570,7 @@ export default function ProductPage() {
                     <DialogTrigger asChild>
                       <Button
                         variant="outline"
-                        disabled={product?.status !== "in_stock" || loading}
+                        disabled={product?.status !== "in_stock"}
                       >
                         Sell This Product
                       </Button>
